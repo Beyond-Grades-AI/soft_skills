@@ -1,0 +1,25 @@
+<!-- test_page.html -->
+
+{% extends 'base.html' %}
+
+{% block title %}
+Test Page
+{% endblock %}
+
+{% block content %}
+    <h1>Test Page</h1>
+    print("{{ test.id }}")
+    <form method="post" action="{% url 'submit_answers' %}">
+        {% csrf_token %}
+        <input type="hidden" name="test_id" value="{{ test.id }}">
+        <label for="full_name">Full Name (two words):</label>
+        <input type="text" name="full_name" id="full_name" required>
+        <ul>
+            {% for question in questions %}
+                <li>{{ question.text }}</li>
+                <textarea name="answer_{{ question.id }}" rows="3" cols="30"></textarea> <!-- Textarea for answering -->
+            {% endfor %}
+        </ul>
+        <button type="submit">הגשה</button>
+    </form>
+{% endblock %}

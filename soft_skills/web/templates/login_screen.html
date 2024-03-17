@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}
+soft skills
+{% endblock %}
+
+{% block css %}
+<style>
+    /* Additional CSS specific to this screen */
+    .title-container {
+        text-align: center;
+        margin-top: 50vh;
+        transform: translateY(-50%);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="title-container">
+    <h1>מסך התחברות</h1>
+    <form method="post" action="">
+        {% csrf_token %}
+        <label for="email">אימייל:</label>
+        <input type="email" id="email" name="input_email" placeholder="כתובת האימייל שלך">
+        <button formmethod="post">התחבר</button> 
+    </form>
+</div>
+{% endblock %}
+

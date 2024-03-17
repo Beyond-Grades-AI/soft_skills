@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Soft Skills
+{% endblock %}
+
+{% block css %}
+<style>
+    /* Additional CSS specific to this screen */
+    input[type="text"],
+    button {
+        margin-bottom: 20px; /* Increase the gap between input fields and buttons */
+    }
+    .title-container {
+        text-align: center;
+        margin-top: 50vh;
+        transform: translateY(-50%);
+    }
+    .form-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    }
+    .form-container input[type="file"],
+    .form-container textarea,
+    .form-container select {
+        width: calc(100% - 20px);
+        margin: 10px 0;
+        padding: 15px;
+        border: 2px solid #eaeaea;
+        border-radius: 10px;
+        box-sizing: border-box;
+        font-size: 1.2rem;
+        transition: border-color 0.3s ease;
+    }
+    .form-container input[type="file"]:focus,
+    .form-container textarea:focus,
+    .form-container select:focus {
+        border-color: #007bff;
+        outline: none;
+    }
+    .form-container button {
+        width: 100%;
+        padding: 15px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        font-size: 1.2rem;
+        margin-top: 20px; /* Add margin-top to create space between the textarea and button */
+    }
+    .form-container button:hover {
+        background-color: #0056b3;
+    }
+
+    .submit-button {
+        display: block;
+        width: 100%;
+        padding: 15px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        font-size: 1.2rem;
+        margin-top: 20px; /* Add margin-top to create space between the textarea and button */
+    }
+
+    .submit-button:hover {
+        background-color: #0056b3;
+    }
+
+    .link-to-survey {
+        display: inline-block;
+        font-size: 1.5rem;
+        margin-top: 20px;
+        text-decoration: none;
+        color: #007bff;
+        transition: color 0.3s ease;
+    }
+
+    .link-to-survey:hover {
+        color: #0056b3;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="title-container">
+    <h1 style="font-size: 3rem;">מסך מורה - יצירת שאלות</h1>
+    <div class="form-container">
+        <form method="post">
+            {% csrf_token %}
+            <input type="file" name="file" accept=".doc, .docx" placeholder="העלאת קובץ Word">
+            <textarea name="input_text" rows="5" placeholder="הדבק/י את החומר הנלמד כאן"></textarea>
+            <select name="skill" id="skill">
+                <option value="" disabled selected>רשימת מיומנויות</option>
+                <option value="skill1">אמפתיה</option>
+                <option value="skill2">חשיבה ביקורתית</option>
+            </select>
+            <input type="text" name="subject" placeholder="מקצוע">
+            <input type="text" name="sub_topic" placeholder="תת-נושא">
+            <button type="submit" formaction="{% url 'teacher_screen' %}">יצירת שאלות</button>
+            <h2 style="font-size: 2rem; margin-top: 20px;">שאלות מג'ונרטות</h2>
+            <textarea name="generated_questions" rows="8" cols="80" style="height: 200px; width: 600px;" placeholder="שאלות מג'ונרטות">{{ generated_questions }}</textarea>
+            <button type="submit" formaction="{% url 'generate_link' %}" class="submit-button">צור קישור</button>
+        </form>
+    </div>
+    {% if test_page_url %}
+        <div>
+            <a href="{{ test_page_url }}" class="link-to-survey">קישור לשאלון</a>
+            <!-- Button to copy link -->
+            <button id="copyButton">העתק קישור</button>
+        </div>
+    {% endif %}
+</div>
+<!-- JavaScript code to copy link -->
+<script>
+    document.getElementById('copyButton').addEventListener('click', function() {
+        var link = window.location.origin + '{{ test_page_url }}';
+        var tempInput = document.createElement('input');
+        tempInput.setAttribute('value', link);
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand('copy');
+        document.body.removeChild(tempInput);
+        alert('קישור הועתק: ' + link);
+    });
+    </script>
+{% endblock %}
