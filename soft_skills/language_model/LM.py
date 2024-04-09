@@ -58,17 +58,3 @@ def evaluate_answers(questions_list, answers_list, soft_skill):
             time.sleep(20)  # sleep for 20 seconds before evaluating next answer
 
     return eval_list
-
-
-# studying_material_path = '/Users/kseniadrokov/Desktop/IndustrialRevolution.txt'
-# empathy_points_path = '/Users/kseniadrokov/Desktop/EmpathyPoints.txt'
-#
-# studying_material = read_text_file(studying_material_path)
-# empathy_points = read_text_file(empathy_points_path)
-
-# print(response.choices[0].message.content)
-
-# Specify the path where you want to save the text file
-# file_path = '/Users/kseniadrokov/Desktop/questions.txt'
-# Save the text to the file
-# save_text_to_file(response.choices[0].message.content, file_path)
