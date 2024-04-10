@@ -8,6 +8,7 @@ from .models import Question  # Import the Question model
 from .models import Answer
 from django.http import HttpResponseServerError
 from django.utils import timezone
+from language_model.LM import create_questions as create_questions_LM
 
 
 
@@ -38,25 +39,14 @@ def main_screen(request):
     return render(request, 'main_screen.html')
 
 #update later to cordinate with LM Component
-def process_input(input_text: str) -> str:
-    """
-    Process the input text or file content and split it into numbered questions.
-    Args:
-        input_text (str): Input text or file content.
+def process_input(input_text: str, soft_skill: str, num_q) -> str:
 
-    Returns:
-        str: numbered questions seperated with new line
-    """
-    # Split the input text by newline characters
-    lines = input_text.split('\n')
-
-
-    # Create a list of numbered questions
-    questions = '\n'.join(lines)
+    questions = create_questions_LM(input_text, soft_skill,False, 5)
 
     return questions
 
-def teacher_screen(request):
+#when user click "יצירת שאלות"
+def create_questions(request):
     print('teacher view!!')
     print('request method: ')
     print(request.method)
@@ -70,6 +60,10 @@ def teacher_screen(request):
         print(skill)
         print(subject)
 
+        # Validate form inputs
+        if not (skill and subject): #<--and sub_topic 
+            return HttpResponseServerError("Please fill in all required fields")
+        
         # Check if the file is uploaded
         uploaded_file = request.FILES.get('file')
         if uploaded_file:
@@ -77,13 +71,15 @@ def teacher_screen(request):
                 # Parse the content of the uploaded file
                 file_content = uploaded_file.read().decode('utf-8')  # Adjust encoding as necessary
                 # Process the file content
-                generated_questions = process_input(file_content)
+                generated_questions = process_input(file_content, skill, 5)
             except Exception as e:
                 return HttpResponseServerError("An error occurred while parsing the file content.")
 
         # Process input text
         if input_text:
-            generated_questions = process_input(input_text)
+            generated_questions = process_input(input_text, skill, 5)
+
+        
 
         # Validate form inputs
         if not (skill and subject and generated_questions): #<--and sub_topic 

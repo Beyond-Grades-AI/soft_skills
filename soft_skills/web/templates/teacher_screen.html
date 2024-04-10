@@ -101,12 +101,12 @@ Soft Skills
             <textarea name="input_text" rows="5" placeholder="הדבק/י את החומר הנלמד כאן"></textarea>
             <select name="skill" id="skill">
                 <option value="" disabled selected>רשימת מיומנויות</option>
-                <option value="skill1">אמפתיה</option>
-                <option value="skill2">חשיבה ביקורתית</option>
+                <option value="אמפתיה">אמפתיה</option>
+                <option value="חשיבה ביקורתית">חשיבה ביקורתית</option>
             </select>
             <input type="text" name="subject" placeholder="מקצוע">
             <input type="text" name="sub_topic" placeholder="תת-נושא">
-            <button type="submit" formaction="{% url 'teacher_screen' %}">יצירת שאלות</button>
+            <button type="submit" formaction="{% url 'create_questions' %}">יצירת שאלות</button>
             <h2 style="font-size: 2rem; margin-top: 20px;">שאלות מג'ונרטות</h2>
             <textarea name="generated_questions" rows="8" cols="80" style="height: 200px; width: 600px;" placeholder="שאלות מג'ונרטות">{{ generated_questions }}</textarea>
             <button type="submit" formaction="{% url 'generate_link' %}" class="submit-button">צור קישור</button>

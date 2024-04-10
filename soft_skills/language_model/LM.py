@@ -1,7 +1,8 @@
 import openai
 import time
-from DataManager import read_text_file, save_text_to_file
-from soft_skills.language_model.PromptBuilder import *
+from .DataManager import read_text_file, save_text_to_file
+from .PromptBuilder import *
+
 
 
 def activate_lm(prompt):
@@ -24,9 +25,9 @@ def activate_lm(prompt):
 
 def create_questions(topic, soft_skill, use_ml=False, num_questions=5):
     if soft_skill == "אמפתיה":
-        points = read_text_file("../language_model/prompt_files/EmpathyPoints.txt")
+        points = read_text_file("EmpathyPoints.txt")
     elif soft_skill == "חשיבה ביקורתית":
-        points = read_text_file("../language_model/prompt_files/CriticalThinkingPoints.txt")
+        points = read_text_file("CriticalThinkingPoints.txt")
     questions_prompt = create_questions_prompt(topic, points, num_questions)
     if use_ml:
         response = activate_lm(questions_prompt)

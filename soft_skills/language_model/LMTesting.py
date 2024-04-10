@@ -1,8 +1,8 @@
 import unittest
 from unittest.mock import patch, MagicMock
 from LM import create_questions, evaluate_answers
-from soft_skills.language_model.DataManager import read_text_file
-from soft_skills.language_model.PromptBuilder import create_questions_prompt
+from UI.language_model.DataManager import read_text_file
+from UI.language_model.PromptBuilder import create_questions_prompt
 
 
 class TestYourFunctions(unittest.TestCase):
