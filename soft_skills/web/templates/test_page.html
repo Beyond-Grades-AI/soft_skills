@@ -20,6 +20,8 @@ Test Page
                 <textarea name="answer_{{ question.id }}" rows="3" cols="30"></textarea> <!-- Textarea for answering -->
             {% endfor %}
         </ul>
+        <label for="test">Test:</label>
+        <input type="checkbox" name="test" id="test">
         <button type="submit">הגשה</button>
     </form>
 {% endblock %}

@@ -154,6 +154,9 @@ def submit_answers(request):
         
         # Retrieve student's full name from the form
         full_name = request.POST.get('full_name')
+        test_box = request.POST.get('test') == 'on'
+        
+
         
         # Validate the full name (two words)
         if not full_name or len(full_name.split()) < 2:
@@ -173,7 +176,8 @@ def submit_answers(request):
                 Answer.objects.create(
                     student_identifier=full_name,
                     question=question,
-                    answer_text=value
+                    answer_text=value,
+                    test =test_box
                 )
         
         student = Student.objects.create(first_name=full_name)  # Create a Student object and associate it with the test

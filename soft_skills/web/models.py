@@ -30,6 +30,7 @@ class Answer(models.Model):
     origin_eval = models.TextField(default="Not yet evaluated")
     approved_eval = models.TextField(default="Not yet approved")
     is_approved = models.BooleanField(default=False)
+    test = models.BooleanField(default=False)
 
     def __str__(self):
         return f'Submission for question {self.answer_text}'

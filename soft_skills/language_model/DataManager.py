@@ -9,9 +9,20 @@ def find_file_path(file_name, start_dir="."):
 
 def read_text_file(file_path):
     try:
-        with open(find_file_path(file_path), 'r') as file:
-            file_contents = file.read()
-        return file_contents
+        path = find_file_path(file_path)
+        print(path)
+        if os.name == "nt":
+            with open(rf"{path}", 'r',encoding='utf-8') as file:
+                file_contents = file.read()
+                
+            file.close()
+            return file_contents
+        else:
+            with open(find_file_path(file_path), 'r') as file:
+                print(f" file path {find_file_path(file_path)}")
+                file_contents = file.read()
+            file.close()
+            return file_contents
     except FileNotFoundError:
         print(f"File '{file_path}' not found.")
         return None
