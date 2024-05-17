@@ -2,6 +2,12 @@
 
 {% extends 'base.html' %}
 
+/* CSS styles */
+div {
+    margin-bottom: 10px; /* Add some margin between the input boxes */
+}
+
+
 {% block title %}
 Test Page
 {% endblock %}
@@ -12,8 +18,14 @@ Test Page
     <form method="post" action="{% url 'submit_answers' %}">
         {% csrf_token %}
         <input type="hidden" name="test_id" value="{{ test.id }}">
-        <label for="full_name">Full Name (two words):</label>
-        <input type="text" name="full_name" id="full_name" required>
+        <div>
+            <label for="full_name">שם מלא:</label>
+            <input type="text" name="full_name" id="full_name" required>
+        </div>
+        <div>
+            <label for="email">אימייל:</label>
+            <input type="text" name="email" id="email" required>
+        </div>
         <ul>
             {% for question in questions %}
                 <li>{{ question.text }}</li>
@@ -25,3 +37,4 @@ Test Page
         <button type="submit">הגשה</button>
     </form>
 {% endblock %}
+
