@@ -108,6 +108,8 @@ Soft Skills
             <input type="text" name="subject" placeholder="מקצוע">
             <input type="text" name="sub_topic" placeholder="תת-נושא">
             <input type="hidden" name="subject2" value="{{ subject }}">
+            <input type="hidden" name="skill2" value="{{ skill }}">
+
             <button type="submit" formaction="{% url 'create_questions' %}">יצירת שאלות</button>
             <h2 style="font-size: 2rem; margin-top: 20px;">שאלות מג'ונרטות</h2>
             <textarea name="generated_questions" rows="8" cols="80" style="height: 200px; width: 600px;" placeholder="שאלות מג'ונרטות">{{ generated_questions }}</textarea>

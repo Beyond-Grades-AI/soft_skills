@@ -9,13 +9,11 @@ from .models import Answer
 from django.http import HttpResponseServerError
 from django.utils import timezone
 from language_model.LM import create_questions as create_questions_LM
-
-
-
 from django.shortcuts import render, redirect
 from .models import Test, Teacher
 
-#first screen
+
+
 def login_screen(request):
     if request.method == 'POST':
         email = request.POST.get('input_email', '')
@@ -25,40 +23,44 @@ def login_screen(request):
             teacher = Teacher.objects.get(email=email)
             # If the teacher exists, log them in
             request.session['teacher'] = teacher.email
-            return redirect('main_screen')  # Redirect to the main screen upon successful login
+            # Redirect to the main screen upon successful login
+            return redirect('main_screen')  
         except Teacher.DoesNotExist:
-            # If the teacher does not exist, create a new one
+            # If teacher does not exist, create a new teacher
             teacher = Teacher.objects.create(email=email)
-            # Log in the newly registered teacher
+            # Save the new teacher's email in session and redirect to main screen
             request.session['teacher'] = teacher.email
-            return redirect('main_screen')  # Redirect to the main screen upon successful registration/login
+            # Redirect to the main screen upon successful registration/login
+            return redirect('main_screen') 
+        
+    # Render login screen if request method is GET 
     return render(request, 'login_screen.html')
 
 
+# View for rendering the main screen
 def main_screen(request):
     return render(request, 'main_screen.html')
 
-#update later to cordinate with LM Component
+# Function to process input text and generate questions using the language model
 def process_input(input_text: str, soft_skill: str, num_q) -> str:
-
+    # Call the create_questions_LM function to generate questions
     questions = create_questions_LM(input_text, soft_skill,False, 5)
-
     return questions
 
-#when user click "יצירת שאלות"
+# View for handling question creation
 def create_questions(request):
-    print('teacher view!!')
+    print('create_questions!!')
     print('request method: ')
     print(request.method)
+
     generated_questions = ""  # Initialize generated questions text
+
     if request.method == 'POST':
         # Get form inputs
         input_text = request.POST.get('input_text', '')
         skill = request.POST.get('skill', '')
         subject = request.POST.get('subject', '')
         sub_topic = request.POST.get('sub_topic', '')
-        print(skill)
-        print(subject)
 
         # Validate form inputs
         if not (skill and subject): #<--and sub_topic 
@@ -66,6 +68,7 @@ def create_questions(request):
         
         # Check if the file is uploaded
         uploaded_file = request.FILES.get('file')
+         # Process uploaded file
         if uploaded_file:
             try:
                 # Parse the content of the uploaded file
@@ -79,24 +82,29 @@ def create_questions(request):
         if input_text:
             generated_questions = process_input(input_text, skill, 5)
 
-        
-
         # Validate form inputs
+        print(subject)
         if not (skill and subject and generated_questions): #<--and sub_topic 
             return HttpResponseServerError("Please fill in all required fields and provide input text or upload a file.")
-        print('saving dict')
+        
+        # Render the teacher screen with generated questions
         return render(request, 'teacher_screen.html', {'generated_questions': generated_questions, 'skill': skill, 'subject': subject})
-    
+        
+    # Render the teacher screen without generated questions if GET request
     return render(request, 'teacher_screen.html', {'generated_questions': generated_questions})
 
 
+# View for generating a test link
 def generate_link(request):
     print('generate_link view!!')
     if request.method == 'POST':
         # Get form data
-
         subject = request.POST.get('subject2')
-        skill = 'skill' #request.POST.get('skill')  # This is hardcoded for now
+        skill = request.POST.get('skill2')
+        print("subject")
+        print(subject)
+        print("skill")
+        print(skill)
 
         if not (subject and skill):
             return HttpResponseServerError("Please select a subject and a skill.")
@@ -106,14 +114,19 @@ def generate_link(request):
 
         try:
             # Create a Test object
+            print("the subject is:")
+            print(subject)
+            
             teacher = Teacher.objects.get(email=request.session.get('teacher'))
             test = Test.objects.create(
-                        id = test_id,
-                        teacher=teacher,
-                        title = subject,
-                        subject = subject
-                        )  #<--skill=skill, subject=subject, sub_topic=sub_topic, creation_date=creation_date,            # Get generated questions from the form
+                id = test_id,
+                teacher=teacher,
+                title = subject,
+                subject = subject,
+                skill = skill
+                )  #<--skill=skill, subject=subject, sub_topic=sub_topic, creation_date=creation_date,
             
+            # Get generated questions from the form
             questions_text = request.POST.get('generated_questions', '')
             print('questions_text: ')
             print(questions_text)
@@ -129,24 +142,24 @@ def generate_link(request):
 
         # Generate the URL for the test page with the test ID appended
         test_page_url = reverse('test_page', args=[test.id])
-
         # Assign the URL to the link attribute of the test object
         test.link = test_page_url
-
         return render(request, 'teacher_screen.html', {'test_page_url': test_page_url})  
 
     return render(request, 'teacher_screen.html')
 
+
+# View for displaying the test page
 def test_page(request, test_id):
     try:
         # Retrieve the test object
         test = Test.objects.get(id=test_id)
-        # Retrieve questions associated with the test
+        # Retrieve associated questions
         questions = test.questions.all()  # Assuming a related_name of 'questions' in Test model
+
         if questions:
             return render(request, 'test_page.html', {'questions': questions, 'test': test})
         else:
-            # Handle case where no questions are found for the test
             return render(request, 'test_page.html', {'error_message': 'No questions found for this test.'})
     except Test.DoesNotExist:
         # Handle case where the Test object does not exist
@@ -157,8 +170,7 @@ def submit_answers(request):
     if request.method == 'POST':
         # Retrieve test ID from the hidden input field
         test_id = request.POST.get('test_id')
-        print('test_id: ')  
-        print(test_id)
+
         test = Test.objects.get(id=test_id)
         questions = test.questions.all()
         
@@ -167,16 +179,22 @@ def submit_answers(request):
         email = request.POST.get('email')
         test_box = request.POST.get('test') == 'on'
         
-
-        
         # Validate the full name (two words)
         if not full_name or len(full_name.split()) < 2:
             # If full name is not provided or doesn't contain at least two words
             return render(request, 'test_page.html', {'test': test, 'questions': questions, 'error_message': 'Please provide your full name with two words.'})
         
+        ##new##
+        # Check if the student has already submitted answers for this test
+        existing_answers = Answer.objects.filter(student_identifier=email, question__in=questions)
+        if existing_answers.exists():
+            return render(request, 'test_page.html', {'test': test, 'questions': questions, 'error_message': 'You have already submitted this test.'})
+        ##new##
+
+
         # Retrieve questions and create Answer objects
         for key, value in request.POST.items():
-            if key.startswith('answer_'):
+            if key.startswith('answer_'): # this 'answer_' prefix comes from the test_page template
                 # Extract question ID from the key
                 question_id = key.split('_')[1]
                 
@@ -188,13 +206,13 @@ def submit_answers(request):
                     student_identifier=email,
                     question=question,
                     answer_text=value,
-                    test =test_box
+                    testbox =test_box
                 )
         
-        # Create a Student object and associate it with the test
-        student = Student.objects.create(
-            first_name=full_name,
-            email = email
+        # if it is the first student's submission, Create a Student object and associate it with the test
+        student, created = Student.objects.get_or_create(
+            student_id = email,
+            defaults={'first_name': full_name.split()[0], 'last_name': full_name.split()[1]}
             ) 
         
         student.tests.add(test)
@@ -205,11 +223,13 @@ def submit_answers(request):
     # If the request method is not POST, redirect to the test page
     return render(request, 'test_page.html')
 
+
 def submitted(request):
     return render(request, 'submitted.html')
 
-#GET request - displaying tests of the logged in teacher
-#POST request - teacher choosed a test to display his submissions
+
+
+# View for displaying tests for the logged-in teacher and reviewing test submissions
 def tests_screen(request):
     print('tests_screen view!!')
 
@@ -231,8 +251,7 @@ def tests_screen(request):
         print('GET request')
         return render(request, 'tests_screen.html', {'tests': teacher_tests})
 
-    #teacher choosed a test to display his submissions
-    #request.method == 'POST'
+    # POST request handling (teacher choosed a test to display his submissions)
     else:
         print('POST request')
         test_id = request.POST.get('test_id')
@@ -240,14 +259,14 @@ def tests_screen(request):
         student_submitted = test.students.all()
         return render(request, 'tests_screen.html', {'test_id': test_id, 'students': student_submitted, 'test': test, 'tests': teacher_tests})
 
-
-def review_test(request, test_id, first_name):
+# View for reviewing a test and handling evaluations
+def review_test(request, test_id, student_id ):
     print('review_test view!!')
     if request.method == 'GET':
         print('GET request')
         # Retrieve the test object
         test = Test.objects.get(id=test_id)
-        student = Student.objects.get(first_name=first_name)
+        student = Student.objects.get(student_id=student_id)
         question = test.questions.all()
 
         # Create a dictionary to store questions and answers for the student
@@ -255,7 +274,7 @@ def review_test(request, test_id, first_name):
 
         for q in question:
             print(q.text)
-            answer = q.answers.all().filter(student_identifier=first_name).first() ####assuming there is only one result
+            answer = q.answers.all().filter(student_identifier=student_id).first() ####assuming there is only one result
             #answer = Answer.objects.get(question=question, student=student).first()
 
             question_answers_dict[q] = answer
@@ -279,7 +298,7 @@ def review_test(request, test_id, first_name):
         # Update the evaluations for each question's answer
         for question_id, evaluation in submitted_evaluations.items():
             try:
-                answer = Answer.objects.get(question_id=question_id, student_identifier = first_name)
+                answer = Answer.objects.get(question_id=question_id, student_identifier = student_id)
                 answer.approved_eval = evaluation
                 answer.is_approved = True
                 answer.save()

@@ -7,6 +7,7 @@ div {
     margin-bottom: 10px; /* Add some margin between the input boxes */
 }
 
+
 {% block title %}
 Test Page
 {% endblock %}
@@ -17,6 +18,12 @@ Test Page
     <form method="post" action="{% url 'submit_answers' %}">
         {% csrf_token %}
         <input type="hidden" name="test_id" value="{{ test.id }}">
+
+        <!-- Display error message if it exists -->
+        {% if error_message %}
+            <p style="color: red;">{{ error_message }}</p>
+        {% endif %}
+
         <div>
             <label for="full_name">שם מלא:</label>
             <input type="text" name="full_name" id="full_name" required>
@@ -36,3 +43,4 @@ Test Page
         <button type="submit">הגשה</button>
     </form>
 {% endblock %}
+
