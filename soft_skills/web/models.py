@@ -6,7 +6,7 @@ from django.db import models
 class Test(models.Model):
     id = models.AutoField(primary_key=True)  # Field to store the test ID
     title = models.CharField(max_length=100)
-    #skill = models.CharField(max_length=100)  # Field to store skill
+    skill = models.CharField(max_length=100)  # Field to store skill
     subject = models.CharField(max_length=100)  # Field to store subject
     #sub_topic = models.CharField(max_length=100)  # Field to store sub-topic
     #creation_date = models.DateField(auto_now_add=True)  # Automatically set the creation date to the current date when the object is created
@@ -41,7 +41,7 @@ class Answer(models.Model):
         return f'Submission for question {self.answer_text}'
     
 class Student(models.Model):
-    student_identifier = models.EmailField(primary_key=True)  # Field to store email address as id
+    student_id = models.EmailField(primary_key=True)  # Field to store email address as id
     first_name = models.CharField(max_length=100)  # Field to store first name
     last_name = models.CharField(max_length=100)  # Field to store last name
     tests = models.ManyToManyField('Test', related_name='students')  # Field to store tests

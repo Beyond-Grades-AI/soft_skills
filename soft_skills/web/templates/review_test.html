@@ -39,6 +39,11 @@ Soft Skills - Review Test
         height: 100px; /* Adjust as needed */
         margin-bottom: 20px;
     }
+    .error-message {
+        color: red;
+        text-align: center;
+        margin-bottom: 20px;
+    }
 </style>
 {% endblock %}
 
@@ -49,6 +54,9 @@ Soft Skills - Review Test
         <h2>Test Questions:</h2>
         <form method="post">
             {% csrf_token %}
+            {% if error_message %}
+            <div class="error-message">{{ error_message }}</div>
+            {% endif %}
             <table>
                 <thead>
                     <tr>
@@ -58,19 +66,20 @@ Soft Skills - Review Test
                     </tr>
                 </thead>
                 <tbody>
-                    <input_type="hidden" name="first_name" value="{{ student.first_name }}">
                     {% for question, answer in question_answers_dict.items %}
                     <tr>
                         <td>{{ question.text }}</td>
-                        <td>{{ answer.answer_text}}</td>
+                        <td>{{ answer.answer_text }}</td>
                         <td>
                             {% if answer.is_approved %}
                                 <span class="evaluation">{{ answer.approved_eval }}</span>
                             {% else %}
                                 <textarea class="evaluation" name="evaluation_{{ question.id }}">{{ answer.origin_eval }}</textarea>
-                            {% endif %}                     
+                            {% endif %}
+                            <input type="hidden" name="question_id_{{ question.id }}" value="{{ question.id }}">
+                            <input type="hidden" name="test_id" value="{{ test.id }}">
+                            <input type="hidden" name="student_id" value="{{ student.student_id }}">
                         </td>
-                    <input type="hidden" name="question_id" value="{{ question.id }}">
                     </tr>
                     {% endfor %}
                 </tbody>

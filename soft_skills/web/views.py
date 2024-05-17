@@ -100,7 +100,11 @@ def generate_link(request):
     if request.method == 'POST':
         # Get form data
         subject = request.POST.get('subject2')
-        skill = 'skill' #request.POST.get('skill')  # This is hardcoded for now
+        skill = request.POST.get('skill2')
+        print("subject")
+        print(subject)
+        print("skill")
+        print(skill)
 
         if not (subject and skill):
             return HttpResponseServerError("Please select a subject and a skill.")
@@ -118,7 +122,8 @@ def generate_link(request):
                 id = test_id,
                 teacher=teacher,
                 title = subject,
-                subject = subject
+                subject = subject,
+                skill = skill
                 )  #<--skill=skill, subject=subject, sub_topic=sub_topic, creation_date=creation_date,
             
             # Get generated questions from the form
@@ -179,6 +184,14 @@ def submit_answers(request):
             # If full name is not provided or doesn't contain at least two words
             return render(request, 'test_page.html', {'test': test, 'questions': questions, 'error_message': 'Please provide your full name with two words.'})
         
+        ##new##
+        # Check if the student has already submitted answers for this test
+        existing_answers = Answer.objects.filter(student_identifier=email, question__in=questions)
+        if existing_answers.exists():
+            return render(request, 'test_page.html', {'test': test, 'questions': questions, 'error_message': 'You have already submitted this test.'})
+        ##new##
+
+
         # Retrieve questions and create Answer objects
         for key, value in request.POST.items():
             if key.startswith('answer_'): # this 'answer_' prefix comes from the test_page template
@@ -193,13 +206,15 @@ def submit_answers(request):
                     student_identifier=email,
                     question=question,
                     answer_text=value,
-                    test_box =test_box
+                    testbox =test_box
                 )
         
-        # Create a Student object and associate it with the test
-        student = Student.objects.create(
-            first_name=full_name,
-            email = email) 
+        # if it is the first student's submission, Create a Student object and associate it with the test
+        student, created = Student.objects.get_or_create(
+            student_id = email,
+            defaults={'first_name': full_name.split()[0], 'last_name': full_name.split()[1]}
+            ) 
+        
         student.tests.add(test)
         
         # Redirect to a success page
@@ -245,13 +260,13 @@ def tests_screen(request):
         return render(request, 'tests_screen.html', {'test_id': test_id, 'students': student_submitted, 'test': test, 'tests': teacher_tests})
 
 # View for reviewing a test and handling evaluations
-def review_test(request, test_id, first_name):
+def review_test(request, test_id, student_id ):
     print('review_test view!!')
     if request.method == 'GET':
         print('GET request')
         # Retrieve the test object
         test = Test.objects.get(id=test_id)
-        student = Student.objects.get(first_name=first_name)
+        student = Student.objects.get(student_id=student_id)
         question = test.questions.all()
 
         # Create a dictionary to store questions and answers for the student
@@ -259,7 +274,7 @@ def review_test(request, test_id, first_name):
 
         for q in question:
             print(q.text)
-            answer = q.answers.all().filter(student_identifier=first_name).first() ####assuming there is only one result
+            answer = q.answers.all().filter(student_identifier=student_id).first() ####assuming there is only one result
             #answer = Answer.objects.get(question=question, student=student).first()
 
             question_answers_dict[q] = answer
@@ -283,7 +298,7 @@ def review_test(request, test_id, first_name):
         # Update the evaluations for each question's answer
         for question_id, evaluation in submitted_evaluations.items():
             try:
-                answer = Answer.objects.get(question_id=question_id, student_identifier = first_name)
+                answer = Answer.objects.get(question_id=question_id, student_identifier = student_id)
                 answer.approved_eval = evaluation
                 answer.is_approved = True
                 answer.save()

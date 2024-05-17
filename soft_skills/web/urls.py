@@ -13,6 +13,6 @@ urlpatterns = [
     path('submit_answers/', views.submit_answers, name='submit_answers'),
     path('submitted/', views.submitted, name='submitted'),
     path('tests_screen/', views.tests_screen, name='tests_screen'),
-    path('review_test/<int:test_id>/<str:first_name>', views.review_test, name='review_test'),
+    path('review_test/<int:test_id>/<str:student_id>', views.review_test, name='review_test'),
     path('failure_url/', views.failure_url, name='failure_url'),
 ]
