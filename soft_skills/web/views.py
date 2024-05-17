@@ -94,8 +94,9 @@ def generate_link(request):
     print('generate_link view!!')
     if request.method == 'POST':
         # Get form data
-        subject = 'subject' #request.POST.get('subject') #############################################################################################
-        skill = 'skill' #request.POST.get('skill')      ###################################################################################################
+
+        subject = request.POST.get('subject2')
+        skill = 'skill' #request.POST.get('skill')  # This is hardcoded for now
 
         if not (subject and skill):
             return HttpResponseServerError("Please select a subject and a skill.")
@@ -106,8 +107,13 @@ def generate_link(request):
         try:
             # Create a Test object
             teacher = Teacher.objects.get(email=request.session.get('teacher'))
-            test = Test.objects.create(id = test_id, teacher=teacher)  #<--skill=skill, subject=subject, sub_topic=sub_topic, creation_date=creation_date,
-            # Get generated questions from the form
+            test = Test.objects.create(
+                        id = test_id,
+                        teacher=teacher,
+                        title = subject,
+                        subject = subject
+                        )  #<--skill=skill, subject=subject, sub_topic=sub_topic, creation_date=creation_date,            # Get generated questions from the form
+            
             questions_text = request.POST.get('generated_questions', '')
             print('questions_text: ')
             print(questions_text)
@@ -123,6 +129,10 @@ def generate_link(request):
 
         # Generate the URL for the test page with the test ID appended
         test_page_url = reverse('test_page', args=[test.id])
+
+        # Assign the URL to the link attribute of the test object
+        test.link = test_page_url
+
         return render(request, 'teacher_screen.html', {'test_page_url': test_page_url})  
 
     return render(request, 'teacher_screen.html')
@@ -154,6 +164,7 @@ def submit_answers(request):
         
         # Retrieve student's full name from the form
         full_name = request.POST.get('full_name')
+        email = request.POST.get('email')
         test_box = request.POST.get('test') == 'on'
         
 
@@ -174,13 +185,18 @@ def submit_answers(request):
                 
                 # Create Answer object
                 Answer.objects.create(
-                    student_identifier=full_name,
+                    student_identifier=email,
                     question=question,
                     answer_text=value,
                     test =test_box
                 )
         
-        student = Student.objects.create(first_name=full_name)  # Create a Student object and associate it with the test
+        # Create a Student object and associate it with the test
+        student = Student.objects.create(
+            first_name=full_name,
+            email = email
+            ) 
+        
         student.tests.add(test)
         
         # Redirect to a success page
@@ -224,22 +240,6 @@ def tests_screen(request):
         student_submitted = test.students.all()
         return render(request, 'tests_screen.html', {'test_id': test_id, 'students': student_submitted, 'test': test, 'tests': teacher_tests})
 
-# def display_tests(request):
-#     # Retrieve the logged-in teacher's email from the session
-#     teacher_email = request.session.get('teacher')
-#     if teacher_email:
-#         # Retrieve the logged-in teacher's tests
-#         try:
-#             teacher = Teacher.objects.get(email=teacher_email)
-#             teacher_tests = teacher.tests.all()
-#         except Teacher.DoesNotExist:
-#             # Handle case where teacher does not exist
-#             pass
-#     else:
-#         # Handle case where teacher is not logged in
-#         return redirect('login_screen')
-
-#     return render(request, 'tests_screen.html', {'tests': teacher_tests})
 
 def review_test(request, test_id, first_name):
     print('review_test view!!')

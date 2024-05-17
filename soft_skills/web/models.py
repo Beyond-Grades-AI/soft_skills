@@ -5,8 +5,9 @@ from django.db import models
 #explaintion about foreign key 'questions' in the buttom
 class Test(models.Model):
     id = models.AutoField(primary_key=True)  # Field to store the test ID
+    title = models.CharField(max_length=100)
     #skill = models.CharField(max_length=100)  # Field to store skill
-    #subject = models.CharField(max_length=100)  # Field to store subject
+    subject = models.CharField(max_length=100)  # Field to store subject
     #sub_topic = models.CharField(max_length=100)  # Field to store sub-topic
     #creation_date = models.DateField(auto_now_add=True)  # Automatically set the creation date to the current date when the object is created
     teacher = models.ForeignKey('Teacher', related_name='tests', on_delete=models.CASCADE)  # Field to store the teacher
@@ -30,12 +31,13 @@ class Answer(models.Model):
     origin_eval = models.TextField(default="Not yet evaluated")
     approved_eval = models.TextField(default="Not yet approved")
     is_approved = models.BooleanField(default=False)
-    test = models.BooleanField(default=False)
+    testbox = models.BooleanField(default=False)
 
     def __str__(self):
         return f'Submission for question {self.answer_text}'
     
 class Student(models.Model):
+    student_identifier = models.EmailField(primary_key=True)  # Field to store email address as id
     first_name = models.CharField(max_length=100)  # Field to store first name
     #last_name = models.CharField(max_length=100)  # Field to store last name
     #email = models.EmailField()  # Field to store email address
