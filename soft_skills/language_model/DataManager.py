@@ -12,14 +12,14 @@ def read_text_file(file_path):
         path = find_file_path(file_path)
         print(path)
         if os.name == "nt":
-            with open(rf"{path}", 'r',encoding='utf-8') as file:
+            with open(rf"{path}", 'r', encoding='utf-8') as file:
                 file_contents = file.read()
                 
             file.close()
             return file_contents
         else:
+            print(f" file path {find_file_path(file_path)}")
             with open(find_file_path(file_path), 'r') as file:
-                print(f" file path {find_file_path(file_path)}")
                 file_contents = file.read()
             file.close()
             return file_contents
