@@ -3,7 +3,7 @@ import time
 from .DataManager import read_text_file, save_text_to_file
 from cryptography.fernet import Fernet
 from .PromptBuilder import *
-from ..data_manager.DataReader import get_questions_answers_test_df, update_origin_eval
+from data_manager.DataReader import get_questions_answers_test_df, update_origin_eval
 
 
 def decrypt():

@@ -267,6 +267,8 @@ def review_test(request, test_id, student_id ):
         # Retrieve the test object
         test = Test.objects.get(id=test_id)
         student = Student.objects.get(student_id=student_id)
+        
+        student_name = f"{student.first_name} {student.last_name}"
         question = test.questions.all()
 
         # Create a dictionary to store questions and answers for the student
@@ -279,7 +281,7 @@ def review_test(request, test_id, student_id ):
 
             question_answers_dict[q] = answer
 
-        return render(request, 'review_test.html', {'test': test, 'student': student, 'question_answers_dict': question_answers_dict})
+        return render(request, 'review_test.html', {'test': test, 'student_name': student_name ,'student': student, 'question_answers_dict': question_answers_dict})
     else:
         print('POST request')
         # Retrieve the test object

@@ -49,7 +49,9 @@ Soft Skills - Review Test
 
 {% block content %}
 <div class="title-container">
-    <h1 style="font-size: 3rem;">Review Test - {{ test.id }}</h1>
+    <h1 style="font-size: 3rem;"> ההגשה של  {{ student_name }}</h1>
+    <h3 style="font-size: 3rem;">  {{ test.subject }}</h3>
+
     <div class="test-container">
         <h2>Test Questions:</h2>
         <form method="post">
@@ -62,7 +64,8 @@ Soft Skills - Review Test
                     <tr>
                         <th>Question</th>
                         <th>Answer</th>
-                        <th>Evaluation</th>
+                        <th>origin Evaluation</th>
+                        <th>teacher Evaluation</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -70,6 +73,7 @@ Soft Skills - Review Test
                     <tr>
                         <td>{{ question.text }}</td>
                         <td>{{ answer.answer_text }}</td>
+                        <td>{{ answer.origin_eval }}</td>
                         <td>
                             {% if answer.is_approved %}
                                 <span class="evaluation">{{ answer.approved_eval }}</span>
