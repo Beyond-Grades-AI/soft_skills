@@ -7,6 +7,27 @@ Soft Skills
 
 {% block css %}
 <style>
+body {
+        background-color: white;
+        margin: 0;
+        padding: 0;
+    }
+    .header {
+        background-color: #006349;
+        width: 100%;
+        padding: 70px 0;
+        box-sizing: border-box;
+    }
+    .title-box {
+        background-color: white;
+        color: #009150;
+        padding: 20px;
+        border-radius: 0px;
+        text-align: center;
+        max-width: 600px;
+        margin: -50px auto 0 auto; /* Adjusted margin to move it down */
+        box-shadow: 0 30px 70px rgba(0, 0, 0, 0.1); /* Added shadow */
+    }
     /* Additional CSS specific to this screen */
     input[type="text"],
     button {
@@ -14,12 +35,21 @@ Soft Skills
     }
     .title-container {
         text-align: center;
-        margin-top: 50vh;
+        margin-top: 70vh;
         transform: translateY(-50%);
+    }
+    .header h1 {
+        color: white;
+        text-align: right;
+        font-size: 20px; /* Adjust size as needed */
+        font-weight: normal; /* Use 'normal' if you don't want it bold */
+        font-family: Noto Sans Hebrew New; /* Change to your preferred font */
+        margin-right: 90px;
+        margin-bottom: -30px; /* Add margin-bottom to create space below h1 */
     }
     .form-container {
         max-width: 600px;
-        margin: 0 auto;
+        margin: 20px auto 0 auto; /* Adjusted margin to move it down */
         padding: 20px;
         background-color: #fff;
         border-radius: 10px;
@@ -89,12 +119,24 @@ Soft Skills
     .link-to-survey:hover {
         color: #0056b3;
     }
+    .header-text {
+        position: absolute;
+        top: 25px;
+        left: 20px;
+        color: white;
+            font-size: 14px; /* Adjust size as needed */
+        font-family: Arial Rounded MT Bold; /* Change to your preferred font */
+        {#font-weight: bold; /* Use 'normal' if you don't want it bold */#}
+    }
 </style>
 {% endblock %}
 
 {% block content %}
+    <div class="header">
+<div class="header-text">BEYOND GRADES</div>
+        <h1>נתחיל בכמה פרטים על הכיתה, על חומר הלימוד ועל המיומנות</h1>
+</div>
 <div class="title-container">
-    <h1 style="font-size: 3rem;">מסך מורה - יצירת שאלות</h1>
     <div class="form-container">
         <form method="post">
             {% csrf_token %}
