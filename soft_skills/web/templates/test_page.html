@@ -1,7 +1,52 @@
 <!-- test_page.html -->
 
 {% extends 'base.html' %}
-
+{%  block css %}
+<style>
+body {
+        background-color: white;
+        margin: 0;
+        padding: 0;
+    }
+    .header {
+        background-color: #006349;
+        width: 100%;
+        padding: 70px 0;
+        box-sizing: border-box;
+    }
+    .title-box {
+        background-color: white;
+        color: #009150;
+        padding: 20px;
+        border-radius: 0px;
+        text-align: center;
+        max-width: 600px;
+        margin: -50px auto 0 auto; /* Adjusted margin to move it down */
+        box-shadow: 0 30px 70px rgba(0, 0, 0, 0.1); /* Added shadow */
+    }
+    .title-container {
+        text-align: center;
+        margin-top: 50px; /* Adjust as needed */
+    }
+    .tests-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    }
+    .header-text {
+        position: absolute;
+        top: 25px;
+        left: 20px;
+        color: white;
+            font-size: 14px; /* Adjust size as needed */
+        font-family: Arial Rounded MT Bold; /* Change to your preferred font */
+        {#font-weight: bold; /* Use 'normal' if you don't want it bold */#}
+    }
+</style>
+{% endblock %}
 /* CSS styles */
 div {
     margin-bottom: 10px; /* Add some margin between the input boxes */
@@ -13,6 +58,9 @@ Test Page
 {% endblock %}
 
 {% block content %}
+    <div class="header">
+<div class="header-text">BEYOND GRADES</div>
+</div>
     <h1>Test Page</h1>
     print("{{ test.id }}")
     <form method="post" action="{% url 'submit_answers' %}">

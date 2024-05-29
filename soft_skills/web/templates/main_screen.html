@@ -2,36 +2,131 @@
 
 {% extends 'base.html' %}
 
+{% load static %}
 {% block title %}
 Main Screen
 {% endblock %}
 
 {% block css %}
 <style>
-    /* Add any custom CSS styles here */
-    .button-container {
-        text-align: center;
-        margin-top: 100px;
+    body{
+        background-color: #006349;
     }
-    .button {
+    /* Add any custom CSS styles here */
+
+    .title-container {
+        text-align: center;
+        align-items: center;
+        margin-top: 40vh; /* Adjust margin-top to move the content up */
+        transform: translateY(-50%);
+        gap: 0px;
+        position: relative; /* Set position to relative for absolute positioning */
+    }
+    .title-container h1 {
+        color: #F3CCE7;
+        font-size: 65px; /* Adjust size as needed */
+        font-weight: normal; /* Use 'normal' if you don't want it bold */
+        font-family: Noto Sans Hebrew New; /* Change to your preferred font */
+        margin-bottom: 5px; /* Add margin-bottom to create space below h1 */
+    }
+    .title-container h2 {
+        color: #F3CCE7;
+        font-size: 70px; /* Adjust size as needed */
+        font-weight: bold; /* Use 'normal' if you don't want it bold */
+        margin-top: 10px; /* Add margin-top to create space above h2 */
+        font-family: Noto Sans Hebrew New; /* Change to your preferred font */
+    }
+    .button-create {
+        margin-top: 5px; /* Adjust margin-top to move the buttons up */
+        padding: 5px 30px;
+        background-color: #006349; /* Button background color */
+        color: #F3CCE7; /* Button text color */
+        font-size: 18px; /* Font size */
+        border: 2px solid #F3CCE7; /* Remove border */
+        border-radius: 30px; /* Rounded corners */
+        cursor: pointer; /* Pointer cursor on hover */
+        margin: 10px; /* Margin around the button */
+        font-family: Noto Sans Hebrew New;
+    }
+     .button-create:hover {
+        background-color: #004727; /* Background color on hover */
+    }
+    .button-check {
         display: inline-block;
-        padding: 10px 20px;
-        background-color: #007bff;
+        padding: 5px 30px;
+        background-color: #F3CCE7; /* Button background color */
+        color: #006349; /* Button text color */
+        font-size: 18px; /* Font size */
+        border: 2px solid #F3CCE7; /* Border color */
+        border-radius: 30px; /* Rounded corners */
+        cursor: pointer; /* Pointer cursor on hover */
+        margin: 10px; /* Margin around the button */
+        font-family: 'Noto Sans Hebrew New';
+    }
+    .button-check:hover {
+        background-color: #e0b8d4; /* Background color on hover */
+    }
+    .header-text {
+        position: absolute;
+        top: 25px;
+        left: 20px;
         color: white;
-        font-size: 18px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        margin: 10px;
+        font-size: 14px; /* Adjust size as needed */
+        font-family: Arial Rounded MT Bold; /* Change to your preferred font */
+    }
+     .custom-image {
+        position: absolute;
+        bottom: 0; /* Align to the bottom */
+        right: 0; /* Align to the right */
+        width: 33%; /* Image width */
+        height: auto; /* Maintain aspect ratio */
+        transform: rotate(0deg); /* Image rotation */
+        opacity: 1; /* Opacity (0 to 1) */
+        /* Additional styles for the image */
+    }
+     .custom-image1 {
+        position: absolute;
+        bottom: 0; /* Align to the bottom */
+        right: 0; /* Align to the right */
+        width: 23%; /* Image width */
+        height: auto; /* Maintain aspect ratio */
+        transform: rotate(0deg); /* Image rotation */
+        opacity: 1; /* Opacity (0 to 1) */
+        /* Additional styles for the image */
+    }
+     .custom-image2 {
+        position: absolute;
+        bottom: 0; /* Align to the bottom */
+        left: 0; /* Align to the right */
+        width: 20%; /* Image width */
+        height: auto; /* Maintain aspect ratio */
+        transform: rotate(0deg); /* Image rotation */
+        opacity: 1; /* Opacity (0 to 1) */
+        /* Additional styles for the image */
+    }
+     .custom-image3 {
+        position: absolute;
+        bottom: -40px; /* Align to the bottom */
+        left: 40px; /* Align to the right */
+        width:30%; /* Image width */
+        height: auto; /* Maintain aspect ratio */
+        transform: rotate(0deg); /* Image rotation */
+        opacity: 1; /* Opacity (0 to 1) */
+        /* Additional styles for the image */
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="button-container">
-    <h1>מסך מורה-ראשי</h1>
-    <h2>ברוך הבא</h2>
-    <button class="button" onclick="window.location.href='{% url 'create_questions' %}';">צור שאלון</button>
-    <button class="button" onclick="window.location.href='{% url 'tests_screen' %}'">בדיקת תוצאות</button>
+    <div class="header-text">BEYOND GRADES</div>
+<div class="title-container">
+    <h1>יצירת שאלונים לתרגול</h1>
+    <h2>מיומנויות רכות בשיעור שלך</h2>
+    <button class="button-create" onclick="window.location.href='{% url 'tests_screen' %}';">בדיקת הגשות</button>
+    <button class="button-check" onclick="window.location.href='{% url 'create_questions' %}'">יצירת שאלון</button>
 </div>
+<img src="{% static 'test_img.png' %}" alt="Custom Image" class="custom-image">
+<img src="{% static 'test_img1.png' %}" alt="Custom Image" class="custom-image1">
+<img src="{% static 'test_img2.png' %}" alt="Custom Image" class="custom-image2">
+<img src="{% static 'test_img3.png' %}" alt="Custom Image" class="custom-image3">
 {% endblock %}
