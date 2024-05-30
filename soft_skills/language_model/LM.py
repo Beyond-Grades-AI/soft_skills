@@ -57,6 +57,7 @@ def create_questions(topic, soft_skill, use_ml=False, num_questions=5):
                     question.strip()]  # Remove any empty lines and leading/trailing spaces
         return ["Error occurred. Try again later"]
     else:
+        questions_prompt = read_text_file("exmpl_qest.txt")
         questions_list = questions_prompt.split('\n')  # Assuming each question is on a new line
         return [question.strip() for question in questions_list if
                 question.strip()]  # Remove any empty lines and leading/trailing spaces
