@@ -1,20 +1,20 @@
 import openai
 import time
-from .DataManager import read_text_file, save_text_to_file
+from DataManager import read_text_file, save_text_to_file, find_file_path
 from cryptography.fernet import Fernet
-from .PromptBuilder import *
-from data_manager.DataReader import get_questions_answers_test_df, update_origin_eval
+from PromptBuilder import *
+# from data_manager.DataReader import get_questions_answers_test_df, update_origin_eval
+from soft_skills.data_manager.DataReader import update_origin_eval, get_questions_answers_test_df
 
 
 def decrypt():
     # Load the encryption key
-    with open("encryption_key.key", "rb") as f:
+    with open(find_file_path('encryption_key.key'), "rb") as f:
         key = f.read()
 
     cipher_suite = Fernet(key)
-
     # Load and decrypt the API key
-    with open("encrypted_api_key.txt", "rb") as f:
+    with open(find_file_path('encrypted_api_key.txt'), "rb") as f:
         encrypted_api_key = f.read()
 
     decrypted_api_key = cipher_suite.decrypt(encrypted_api_key).decode("utf-8")
@@ -45,14 +45,22 @@ def create_questions(topic, soft_skill, use_ml=False, num_questions=5):
         points = read_text_file("EmpathyPoints.txt")
     elif soft_skill == "חשיבה ביקורתית":
         points = read_text_file("CriticalThinkingPoints.txt")
+
     questions_prompt = create_questions_prompt(topic, points, num_questions)
+
     if use_ml:
         response = activate_lm(questions_prompt)
         if response is not None:
-            return response.choices[0].message.content
-        return "Error occurred.Try again later"
+            response_text = response.choices[0].message.content
+            questions_list = response_text.split('\n')  # Assuming each question is on a new line
+            return [question.strip() for question in questions_list if
+                    question.strip()]  # Remove any empty lines and leading/trailing spaces
+        return ["Error occurred. Try again later"]
     else:
-        return f"questions_prompt: \n {questions_prompt}"
+        questions_prompt = read_text_file("exmpl_qest.txt")
+        questions_list = questions_prompt.split('\n')  # Assuming each question is on a new line
+        return [question.strip() for question in questions_list if
+                question.strip()]  # Remove any empty lines and leading/trailing spaces
 
 
 def evaluate_answers(answer, question, soft_skill):

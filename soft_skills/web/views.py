@@ -60,7 +60,10 @@ def create_questions(request):
         input_text = request.POST.get('input_text', '')
         skill = request.POST.get('skill', '')
         subject = request.POST.get('subject', '')
-        sub_topic = request.POST.get('sub_topic', '')
+        grade = request.POST.get('grade', '')
+        test_title = request.POST.get('title','')
+
+        print(f"skill: {skill} subject: {subject}, grade: {grade}, test_title: {test_title}")
 
         # Validate form inputs
         if not (skill and subject): #<--and sub_topic 
@@ -81,6 +84,7 @@ def create_questions(request):
         # Process input text
         if input_text:
             generated_questions = process_input(input_text, skill, 5)
+            print( f"num of questions: {len(generated_questions)}")
 
         # Validate form inputs
         print(subject)
@@ -88,11 +92,21 @@ def create_questions(request):
             return HttpResponseServerError("Please fill in all required fields and provide input text or upload a file.")
         
         # Render the teacher screen with generated questions
-        return render(request, 'teacher_screen.html', {'generated_questions': generated_questions, 'skill': skill, 'subject': subject})
+        return render(request, 'generated_test.html', {
+            'generated_questions': generated_questions,
+            'skill': skill,
+            'subject': subject,
+            'grade': grade,
+            'test_title': test_title
+            })
         
     # Render the teacher screen without generated questions if GET request
     return render(request, 'teacher_screen.html', {'generated_questions': generated_questions})
 
+
+#view for editing the test
+def edit_test(request):
+    return
 
 # View for generating a test link
 def generate_link(request):

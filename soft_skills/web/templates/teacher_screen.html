@@ -7,6 +7,27 @@ Soft Skills
 
 {% block css %}
 <style>
+body {
+        background-color: white;
+        margin: 0;
+        padding: 0;
+    }
+    .header {
+        background-color: #006349;
+        width: 100%;
+        padding: 70px 0;
+        box-sizing: border-box;
+    }
+    .title-box {
+        background-color: white;
+        color: #009150;
+        padding: 20px;
+        border-radius: 0px;
+        text-align: center;
+        max-width: 600px;
+        margin: -50px auto 0 auto; /* Adjusted margin to move it down */
+        box-shadow: 0 30px 70px rgba(0, 0, 0, 0.1); /* Added shadow */
+    }
     /* Additional CSS specific to this screen */
     input[type="text"],
     button {
@@ -14,12 +35,21 @@ Soft Skills
     }
     .title-container {
         text-align: center;
-        margin-top: 50vh;
+        margin-top: 70vh;
         transform: translateY(-50%);
+    }
+    .header h1 {
+        color: white;
+        text-align: right;
+        font-size: 20px; /* Adjust size as needed */
+        font-weight: normal; /* Use 'normal' if you don't want it bold */
+        font-family: Noto Sans Hebrew New; /* Change to your preferred font */
+        margin-right: 90px;
+        margin-bottom: -30px; /* Add margin-bottom to create space below h1 */
     }
     .form-container {
         max-width: 600px;
-        margin: 0 auto;
+        margin: 20px auto 0 auto; /* Adjusted margin to move it down */
         padding: 20px;
         background-color: #fff;
         border-radius: 10px;
@@ -37,6 +67,17 @@ Soft Skills
         font-size: 1.2rem;
         transition: border-color 0.3s ease;
     }
+    .form-container input[type="text"] {
+    width: calc(100% - 20px);
+    margin: 10px 0;
+    padding: 15px;
+    border: 2px solid #eaeaea;
+    border-radius: 10px;
+    box-sizing: border-box;
+    font-size: 1.2rem;
+    transition: border-color 0.3s ease;
+    }
+
     .form-container input[type="file"]:focus,
     .form-container textarea:focus,
     .form-container select:focus {
@@ -89,31 +130,123 @@ Soft Skills
     .link-to-survey:hover {
         color: #0056b3;
     }
+    .header-text {
+        position: absolute;
+        top: 25px;
+        left: 20px;
+        color: white;
+        font-size: 14px; /* Adjust size as needed */
+        font-family: Arial Rounded MT Bold; /* Change to your preferred font */
+    }
+
+    .checkbox-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px; /* Add space between the checkboxes */
+        justify-content: center; /* Center the checkboxes */
+        margin-bottom: 20px; /* Add space below the checkboxes */
+    }
+    .checkbox-group label {
+        display: flex;
+        align-items: center;
+    }
+
+
+
+
+
+    .skill-selection {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.cube {
+    width: 150px;
+    height: 150px;
+    background-color: #007bff;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.cube:hover {
+    background-color: #0056b3;
+}
+
+.cube.selected {
+    background-color: #0056b3;
+}
+
+.cube-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.cube-description {
+    font-size: 1rem;
+}
+
+input[type="hidden"] {
+    display: none;
+}
+
+
 </style>
 {% endblock %}
 
 {% block content %}
+    <div class="header">
+<div class="header-text">BEYOND GRADES</div>
+        <h1>נתחיל בכמה פרטים על הכיתה, על חומר הלימוד ועל המיומנות</h1>
+</div>
 <div class="title-container">
-    <h1 style="font-size: 3rem;">מסך מורה - יצירת שאלות</h1>
     <div class="form-container">
         <form method="post">
             {% csrf_token %}
-            <input type="file" name="file" accept=".doc, .docx" placeholder="העלאת קובץ Word">
-            <textarea name="input_text" rows="5" placeholder="הדבק/י את החומר הנלמד כאן"></textarea>
-            <select name="skill" id="skill">
-                <option value="" disabled selected>רשימת מיומנויות</option>
-                <option value="אמפתיה">אמפתיה</option>
-                <option value="חשיבה ביקורתית">חשיבה ביקורתית</option>
-            </select>
-            <input type="text" name="subject" placeholder="מקצוע">
-            <input type="text" name="sub_topic" placeholder="תת-נושא">
-            <input type="hidden" name="subject2" value="{{ subject }}">
-            <input type="hidden" name="skill2" value="{{ skill }}">
 
-            <button type="submit" formaction="{% url 'create_questions' %}">יצירת שאלות</button>
-            <h2 style="font-size: 2rem; margin-top: 20px;">שאלות מג'ונרטות</h2>
-            <textarea name="generated_questions" rows="8" cols="80" style="height: 200px; width: 600px;" placeholder="שאלות מג'ונרטות">{{ generated_questions }}</textarea>
-            <button type="submit" formaction="{% url 'generate_link' %}" class="submit-button">צור קישור</button>
+            <h2>מה המקצוע שלך?</h2>
+            <div class="checkbox-group">
+                <label><input type="checkbox" name="subject" value="היסטוריה"> היסטוריה</label>
+                <label><input type="checkbox" name="subject" value="ספרות"> ספרות</label>
+                <label><input type="checkbox" name="subject" value="תנ״ך"> תנ״ך</label>
+                <label><input type="checkbox" name="subject" value="תרבות ישראל"> תרבות ישראל</label>
+                <label><input type="checkbox" name="subject" value="אזרחות"> אזרחות</label>
+            </div>
+
+            <h2>כיתה?</h2>
+            <div class="checkbox-group">
+                <label><input type="checkbox" name="grade" value="ז׳"> ז׳</label>
+                <label><input type="checkbox" name="grade" value="ח׳"> ח׳</label>
+                <label><input type="checkbox" name="grade" value="ט׳"> ט׳</label>
+            </div>
+
+            <h2>כותרת השאלון</h2>
+            <input type="text" name="title" placeholder="לדוגמא: “הפיצול בחברה היהודית בסוף ימי בית שני”.">
+
+
+            <h2>תוכן הלימוד</h2>
+            <textarea name="input_text" rows="5" placeholder="כאן אפשר לכתוב או להדביק את החומר הלימודי"></textarea>
+
+            <h2>איזה מיומנויות התלמידים יתרגלו?</h2>
+            <div class="skill-selection">
+                <div class="cube" data-value="חשיבה ביקורתית">
+                    <div class="cube-title">חשיבה ביקורתית</div>
+                    <div class="cube-description">היכולת לזהות באופן מדויק את רגשותיי, מחשבותיי וערכי וכיצד הם משפיעים על התנהגותי. </div>
+                </div>
+                <div class="cube" data-value="אמפתיה">
+                    <div class="cube-title">אמפתיה</div>
+                    <div class="cube-description">תיאור של אמפתיה***.</div>
+                </div>
+            </div>
+            <input type="hidden" name="skill" id="selected-skill">
+
+            <button type="submit" formaction="{% url 'create_questions' %}">יצירת שאלון</button>
         </form>
     </div>
     {% if test_page_url %}
@@ -124,6 +257,7 @@ Soft Skills
         </div>
     {% endif %}
 </div>
+
 <!-- JavaScript code to copy link -->
 <script>
     document.getElementById('copyButton').addEventListener('click', function() {
@@ -137,4 +271,62 @@ Soft Skills
         alert('קישור הועתק: ' + link);
     });
     </script>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const cubes = document.querySelectorAll(".cube");
+
+        cubes.forEach(cube => {
+            cube.addEventListener("click", function() {
+                // Remove 'selected' class from all cubes
+                cubes.forEach(c => c.classList.remove("selected"));
+
+                // Add 'selected' class to the clicked cube
+                this.classList.add("selected");
+
+                // Set the selected skill value to the hidden input
+                const selectedSkill = this.getAttribute("data-value");
+                document.getElementById("selected-skill").value = selectedSkill;
+            });
+        });
+    });
+    </script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const checkboxes = document.querySelectorAll('input[name="subject"]');
+
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                if (this.checked) {
+                    checkboxes.forEach(otherCheckbox => {
+                        if (otherCheckbox !== this) {
+                            otherCheckbox.checked = false;
+                        }
+                    });
+                }
+            });
+        });
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const checkboxes = document.querySelectorAll('input[name="grade"]');
+
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                if (this.checked) {
+                    checkboxes.forEach(otherCheckbox => {
+                        if (otherCheckbox !== this) {
+                            otherCheckbox.checked = false;
+                        }
+                    });
+                }
+            });
+        });
+    });
+</script>
+
 {% endblock %}

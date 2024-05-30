@@ -1,5 +1,6 @@
 import os
 
+
 def find_file_path(file_name, start_dir="."):
     for root, dirs, files in os.walk(start_dir):
         if file_name in files:
@@ -14,7 +15,6 @@ def read_text_file(file_path):
         if os.name == "nt":
             with open(rf"{path}", 'r', encoding='utf-8') as file:
                 file_contents = file.read()
-                
             file.close()
             return file_contents
         else:
@@ -35,7 +35,3 @@ def save_text_to_file(text, file_path):
         print(f"Text saved to '{file_path}' successfully.")
     except Exception as e:
         print(f"Error occurred while saving text to '{file_path}': {e}")
-
-
-
-
