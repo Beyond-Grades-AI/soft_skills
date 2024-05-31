@@ -18,19 +18,20 @@ body {
         padding: 70px 0;
         box-sizing: border-box;
     }
-    .title-box {
-        background-color: white;
-        color: #009150;
-        padding: 20px;
-        border-radius: 0px;
-        text-align: center;
-        max-width: 600px;
-        margin: -50px auto 0 auto; /* Adjusted margin to move it down */
-        box-shadow: 0 30px 70px rgba(0, 0, 0, 0.1); /* Added shadow */
-    }
+    /*.title-box {*/
+    /*    background-color: white;*/
+    /*    color: #009150;*/
+    /*    padding: 20px;*/
+    /*    border-radius: 0px;*/
+    /*    text-align: center;*/
+    /*    max-width: 600px;*/
+    /*    margin: -50px auto 0 auto; !* Adjusted margin to move it down *!*/
+    /*    box-shadow: 0 30px 70px rgba(0, 0, 0, 0.1); !* Added shadow *!*/
+    /*}*/
     /* Additional CSS specific to this screen */
     input[type="text"],
     button {
+        text-align: right;
         margin-bottom: 20px; /* Increase the gap between input fields and buttons */
     }
     .title-container {
@@ -41,19 +42,38 @@ body {
     .header h1 {
         color: white;
         text-align: right;
-        font-size: 20px; /* Adjust size as needed */
+        font-size: 26px; /* Adjust size as needed */
         font-weight: normal; /* Use 'normal' if you don't want it bold */
         font-family: Noto Sans Hebrew New; /* Change to your preferred font */
         margin-right: 90px;
         margin-bottom: -30px; /* Add margin-bottom to create space below h1 */
     }
     .form-container {
-        max-width: 600px;
+        max-width: 900px;
         margin: 20px auto 0 auto; /* Adjusted margin to move it down */
         padding: 20px;
-        background-color: #fff;
-        border-radius: 10px;
-        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        background-color: transparent;
+        /*border-radius: 0px;*/
+        /*box-shadow: 0 0 0px rgba(0, 0, 0, 0.1);*/
+    }
+    .form-container h3 {
+        color: black;
+        text-align: right;
+        font-size: 21px; /* Adjust size as needed */
+        font-weight: normal; /* Use 'normal' if you don't want it bold */
+        font-family: Noto Sans Hebrew New; /* Change to your preferred font */
+        margin-right: 0px;
+        margin-bottom: 20px; /* Add margin-bottom to create space below h1 */
+    }
+    .form-container h4 {
+        color: black;
+        text-align: right;
+        font-size: 21px; /* Adjust size as needed */
+        font-weight: normal; /* Use 'normal' if you don't want it bold */
+        font-family: Noto Sans Hebrew New; /* Change to your preferred font */
+        margin-right: 0px;
+        margin-bottom: 10px; /* Add margin-bottom to create space below h1 */
+        margin-top: 40px;
     }
     .form-container input[type="file"],
     .form-container textarea,
@@ -85,38 +105,40 @@ body {
         outline: none;
     }
     .form-container button {
-        width: 100%;
-        padding: 15px;
-        background-color: #007bff;
+        width: 20%;
+        padding: 8px;
+        background-color: #006349;
         color: #fff;
+        text-align: center;
         border: none;
-        border-radius: 10px;
+        border-radius: 30px;
         cursor: pointer;
         transition: background-color 0.3s ease;
         font-size: 1.2rem;
+        margin-left: -900px;
         margin-top: 20px; /* Add margin-top to create space between the textarea and button */
     }
     .form-container button:hover {
-        background-color: #0056b3;
+        background-color: #004727;
     }
 
-    .submit-button {
-        display: block;
-        width: 100%;
-        padding: 15px;
-        background-color: #007bff;
-        color: #fff;
-        border: none;
-        border-radius: 10px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-        font-size: 1.2rem;
-        margin-top: 20px; /* Add margin-top to create space between the textarea and button */
-    }
+    /*.submit-button {*/
+    /*    display: block;*/
+    /*    width: 100%;*/
+    /*    padding: 15px;*/
+    /*    background-color: #006349;*/
+    /*    color: #fff;*/
+    /*    border: none;*/
+    /*    border-radius: 10px;*/
+    /*    cursor: pointer;*/
+    /*    !*transition: background-color 0.3s ease;*!*/
+    /*    font-size: 1.2rem;*/
+    /*    margin-top: 20px; !* Add margin-top to create space between the textarea and button *!*/
+    /*}*/
 
-    .submit-button:hover {
-        background-color: #0056b3;
-    }
+    /*.submit-button:hover {*/
+    /*    background-color: #0056b3;*/
+    /*}*/
 
     .link-to-survey {
         display: inline-block;
@@ -142,17 +164,29 @@ body {
     .checkbox-group {
         display: flex;
         flex-wrap: wrap;
-        gap: 20px; /* Add space between the checkboxes */
-        justify-content: center; /* Center the checkboxes */
+        gap: 5px; /* Add space between the checkboxes */
+        justify-content: right; /* Center the checkboxes */
+        font-size: 14px;
         margin-bottom: 20px; /* Add space below the checkboxes */
+        margin-right: 80px; /* Add space below the checkboxes */
+        transform: scale(1.2);
+        -webkit-transform: scale(1.2); /* For Safari */
     }
+
     .checkbox-group label {
-        display: flex;
-        align-items: center;
-    }
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 5px; /* Adjust gap between text and checkbox */
+    padding: 5px; /* Add padding for better visual effect */
+    border-radius: 5px; /* Optional: Add border radius for better aesthetics */
+    /*background-color: white; !* Smooth transition for background color *!*/
+}
 
-
-
+    .checkbox-group input[type="checkbox"]:checked {
+        /*transform: scale(1.5);*/
+    accent-color: #ffbfeb; /* Set the background color when checked */
+}
 
 
     .skill-selection {
@@ -163,10 +197,12 @@ body {
 }
 
 .cube {
-    width: 150px;
+    width: 200px;
     height: 150px;
-    background-color: #007bff;
-    color: white;
+    background-color: white;
+    color: black;
+    /*border: 2px solid #006349;*/
+    box-shadow: 0 30px 70px rgba(0, 0, 0, 0.1);
     text-align: center;
     padding: 10px;
     border-radius: 10px;
@@ -175,11 +211,11 @@ body {
 }
 
 .cube:hover {
-    background-color: #0056b3;
+    background-color: #e0b8d4;
 }
 
 .cube.selected {
-    background-color: #0056b3;
+    background-color: #F3CCE7;
 }
 
 .cube-title {
@@ -195,7 +231,10 @@ body {
 input[type="hidden"] {
     display: none;
 }
-
+textarea {
+    direction: rtl; /* Set text direction to right-to-left */
+    text-align: right; /* Align text to the right */
+}
 
 </style>
 {% endblock %}
@@ -210,38 +249,38 @@ input[type="hidden"] {
         <form method="post">
             {% csrf_token %}
 
-            <h2>מה המקצוע שלך?</h2>
+            <h3>?מה המקצוע שלך</h3>
             <div class="checkbox-group">
-                <label><input type="checkbox" name="subject" value="היסטוריה"> היסטוריה</label>
-                <label><input type="checkbox" name="subject" value="ספרות"> ספרות</label>
-                <label><input type="checkbox" name="subject" value="תנ״ך"> תנ״ך</label>
-                <label><input type="checkbox" name="subject" value="תרבות ישראל"> תרבות ישראל</label>
-                <label><input type="checkbox" name="subject" value="אזרחות"> אזרחות</label>
+                                <label>אזרחות<input type="checkbox" name="subject" value="אזרחות"></label>
+                                <label>תרבות ישראל<input type="checkbox" name="subject" value="תרבות ישראל"></label>
+                <label>תנ״ך<input type="checkbox" name="subject" value="תנ״ך"></label>
+                <label>ספרות<input type="checkbox" name="subject" value="ספרות"></label>
+                <label>היסטוריה<input type="checkbox" name="subject" value="היסטוריה"></label>
             </div>
 
-            <h2>כיתה?</h2>
+            <h4>?כיתה</h4>
             <div class="checkbox-group">
-                <label><input type="checkbox" name="grade" value="ז׳"> ז׳</label>
-                <label><input type="checkbox" name="grade" value="ח׳"> ח׳</label>
-                <label><input type="checkbox" name="grade" value="ט׳"> ט׳</label>
+                <label>ט׳<input type="checkbox" name="grade" value="ט׳"></label>
+                <label>ח׳<input type="checkbox" name="grade" value="ח׳"></label>
+                <label>ז׳<input type="checkbox" name="grade" value="ז׳"></label>
             </div>
 
-            <h2>כותרת השאלון</h2>
-            <input type="text" name="title" placeholder="לדוגמא: “הפיצול בחברה היהודית בסוף ימי בית שני”.">
+            <h4>כותרת השאלון</h4>
+            <input type="text" name="title" placeholder="”.לדוגמא: “הפיצול בחברה היהודית בסוף ימי בית שני">
 
 
-            <h2>תוכן הלימוד</h2>
+            <h4>תוכן הלימוד</h4>
             <textarea name="input_text" rows="5" placeholder="כאן אפשר לכתוב או להדביק את החומר הלימודי"></textarea>
 
-            <h2>איזה מיומנויות התלמידים יתרגלו?</h2>
+            <h4>?איזה מיומנויות התלמידים יתרגלו</h4>
             <div class="skill-selection">
                 <div class="cube" data-value="חשיבה ביקורתית">
                     <div class="cube-title">חשיבה ביקורתית</div>
-                    <div class="cube-description">היכולת לזהות באופן מדויק את רגשותיי, מחשבותיי וערכי וכיצד הם משפיעים על התנהגותי. </div>
+                    <div class="cube-description">היכולת לזהות באופן מדויק את רגשותיי, מחשבותיי וערכי וכיצד הם משפיעים על התנהגותי </div>
                 </div>
                 <div class="cube" data-value="אמפתיה">
                     <div class="cube-title">אמפתיה</div>
-                    <div class="cube-description">תיאור של אמפתיה***.</div>
+                    <div class="cube-description">תיאור של אמפתיההיכולת להבין ולחוש את רגשותיהם ונקודות המבט של אחרים</div>
                 </div>
             </div>
             <input type="hidden" name="skill" id="selected-skill">

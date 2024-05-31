@@ -1,10 +1,10 @@
 import openai
 import time
-from DataManager import read_text_file, save_text_to_file, find_file_path
+from .DataManager import read_text_file, save_text_to_file, find_file_path
 from cryptography.fernet import Fernet
-from PromptBuilder import *
-# from data_manager.DataReader import get_questions_answers_test_df, update_origin_eval
-from soft_skills.data_manager.DataReader import update_origin_eval, get_questions_answers_test_df
+from .PromptBuilder import *
+from data_manager.DataReader import get_questions_answers_test_df, update_origin_eval
+#from soft_skills.data_manager.DataReader import update_origin_eval, get_questions_answers_test_df
 
 
 def decrypt():
