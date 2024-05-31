@@ -251,8 +251,8 @@ textarea {
 
             <h3>?מה המקצוע שלך</h3>
             <div class="checkbox-group">
-                                <label>אזרחות<input type="checkbox" name="subject" value="אזרחות"></label>
-                                <label>תרבות ישראל<input type="checkbox" name="subject" value="תרבות ישראל"></label>
+                <label>אזרחות<input type="checkbox" name="subject" value="אזרחות"></label>
+                <label>תרבות ישראל<input type="checkbox" name="subject" value="תרבות ישראל"></label>
                 <label>תנ״ך<input type="checkbox" name="subject" value="תנ״ך"></label>
                 <label>ספרות<input type="checkbox" name="subject" value="ספרות"></label>
                 <label>היסטוריה<input type="checkbox" name="subject" value="היסטוריה"></label>
@@ -288,13 +288,6 @@ textarea {
             <button type="submit" formaction="{% url 'create_questions' %}">יצירת שאלון</button>
         </form>
     </div>
-    {% if test_page_url %}
-        <div>
-            <a href="{{ test_page_url }}" class="link-to-survey">קישור לשאלון</a>
-            <!-- Button to copy link -->
-            <button id="copyButton">העתק קישור</button>
-        </div>
-    {% endif %}
 </div>
 
 <!-- JavaScript code to copy link -->

@@ -9,6 +9,7 @@ urlpatterns = [
     path('tests_screen/', views.tests_screen, name='tests_screen'),
     path('teacher_screen/', views.create_questions, name='create_questions'),
     path('generated_test/', views.edit_test, name='edit_test'),
+    path('test_link/', views.generate_link, name= 'generate_link'),
     path('generate_link/', views.generate_link, name='generate_link'),  
     path('test_page/<int:test_id>/', views.test_page, name='test_page'),
     path('submit_answers/', views.submit_answers, name='submit_answers'),

@@ -121,3 +121,14 @@ Generated Questions
     }
 </script>
 {% endblock %}
+
+
+
+
+{% if test_page_url %}
+<div>
+    <a href="{{ test_page_url }}" class="link-to-survey">קישור לשאלון</a>
+    <!-- Button to copy link -->
+    <button id="copyButton">העתק קישור</button>
+</div>
+{% endif %}

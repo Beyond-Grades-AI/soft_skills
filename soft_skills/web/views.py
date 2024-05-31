@@ -87,7 +87,6 @@ def create_questions(request):
             print( f"num of questions: {len(generated_questions)}")
 
         # Validate form inputs
-        print(subject)
         if not (skill and subject and generated_questions): #<--and sub_topic 
             return HttpResponseServerError("Please fill in all required fields and provide input text or upload a file.")
         
@@ -101,7 +100,7 @@ def create_questions(request):
             })
         
     # Render the teacher screen without generated questions if GET request
-    return render(request, 'teacher_screen.html', {'generated_questions': generated_questions})
+    return render(request, 'teacher_screen.html')
 
 
 #view for editing the test
@@ -160,7 +159,7 @@ def generate_link(request):
         test.link = test_page_url
         return render(request, 'teacher_screen.html', {'test_page_url': test_page_url})  
 
-    return render(request, 'teacher_screen.html')
+    return render(request, 'test_link.html')
 
 
 # View for displaying the test page
