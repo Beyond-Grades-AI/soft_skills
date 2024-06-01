@@ -165,6 +165,8 @@ Generated Questions
         <input type="hidden" name="grade" value="{{ grade }}">
         <input type="hidden" name="test_title" value="{{ test_title }}">
         <input type="hidden" name="skill" value="{{ skill }}">
+        <input type="hidden" name="subject" value="{{ subject }}">
+        <input type="hidden" name="test_id" value="{{ test_id }}">
         {% for question in generated_questions %}
             <div class="triangle-box">
                 <button class="menu-button" onclick="toggleMenu(event)">
@@ -175,15 +177,15 @@ Generated Questions
                     </div>
                 </button>
                 <div class="menu">
-                    <button onclick="showEditForm('{{ forloop.counter }}', '{{ question }}')">Edit</button>
-                    <button onclick="deleteQuestion('{{ forloop.counter }}')">Delete</button>
+                    <button type="button" onclick="showEditForm('{{ forloop.counter }}', '{{ question }}')">Edit</button>
+                    <button type="button"  onclick="deleteQuestion('{{ forloop.counter }}')">Delete</button>
                 </div>
                 <div class="question-text" id="question-text-{{ forloop.counter }}">
                     <span class="question-number">{{ forloop.counter }}</span> {{ question }}
                 </div>
                 <div class="edit-form" id="edit-form-{{ forloop.counter }}">
                     <input type="text" id="edit-input-{{ forloop.counter }}" value="{{ question }}" />
-                    <button type="submit">Save</button>
+                    <button type="button" onclick="saveQuestion('{{ forloop.counter }}')">Save</button>
                     <button type="button" onclick="cancelEdit('{{ forloop.counter }}')">Cancel</button>
                 </div>
                 <input type="hidden" name="questions[]" 
@@ -198,6 +200,8 @@ Generated Questions
 {% block scripts %}
 <script>
     function toggleMenu(event) {
+        event.preventDefault(); // Prevent default form submission
+
         console.log('toggleMenu function called');
         // Close any open menus
         document.querySelectorAll('.menu').forEach(menu => {

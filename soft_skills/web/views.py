@@ -68,19 +68,7 @@ def create_questions(request):
         # Validate form inputs
         if not (skill and subject): #<--and sub_topic 
             return HttpResponseServerError("Please fill in all required fields")
-        
-        # Check if the file is uploaded
-        uploaded_file = request.FILES.get('file')
-         # Process uploaded file
-        if uploaded_file:
-            try:
-                # Parse the content of the uploaded file
-                file_content = uploaded_file.read().decode('utf-8')  # Adjust encoding as necessary
-                # Process the file content
-                generated_questions = process_input(file_content, skill, 5)
-            except Exception as e:
-                return HttpResponseServerError("An error occurred while parsing the file content.")
-
+    
         # Process input text
         if input_text:
             generated_questions = process_input(input_text, skill, 5)
@@ -90,13 +78,17 @@ def create_questions(request):
         if not (skill and subject and generated_questions): #<--and sub_topic 
             return HttpResponseServerError("Please fill in all required fields and provide input text or upload a file.")
         
+        creation_date = timezone.now()
+        test_id = int(creation_date.timestamp())  # Generate a unique test ID using the creation date
+
         # Render the teacher screen with generated questions
         return render(request, 'generated_test.html', {
             'generated_questions': generated_questions,
             'skill': skill,
             'subject': subject,
             'grade': grade,
-            'test_title': test_title
+            'test_title': test_title,
+            'test_id': test_id
             })
         
     # Render the teacher screen without generated questions if GET request
@@ -109,46 +101,50 @@ def edit_test(request):
 
 # View for generating a test link
 def generate_link(request):
+    
     print('generate_link view!!')
     if request.method == 'POST':
         # Get form data
-        subject = request.POST.get('subject2')
-        skill = request.POST.get('skill2')
-        print("subject")
-        print(subject)
-        print("skill")
-        print(skill)
+        test_id = request.POST.get('test_id')
+        subject = request.POST.get('subject')
+        skill = request.POST.get('skill')
+        grade = request.POST.get('grade')
+        test_title = request.POST.get('test_title')
+        print(f"(post request) skill: {skill} subject: {subject}, grade: {grade}, test_title: {test_title}")
 
         if not (subject and skill):
             return HttpResponseServerError("Please select a subject and a skill.")
-        # Assuming creation date should be set to the current date and time
-        creation_date = timezone.now()
-        test_id = int(creation_date.timestamp())  # Generate a unique test ID using the creation date
 
         try:
-            # Create a Test object
-            print("the subject is:")
-            print(subject)
-            
             teacher = Teacher.objects.get(email=request.session.get('teacher'))
-            test = Test.objects.create(
-                id = test_id,
-                teacher=teacher,
-                title = subject,
-                subject = subject,
-                skill = skill
-                )  #<--skill=skill, subject=subject, sub_topic=sub_topic, creation_date=creation_date,
+
+            # Create a Test object only if it doesn't already exist
+            teacher = Teacher.objects.get(email=request.session.get('teacher'))
+            test, created = Test.objects.get_or_create(
+                id=test_id,
+                defaults={
+                    'teacher': teacher,
+                    'title': test_title,
+                    'subject': subject,
+                    'skill': skill
+                }
+            )
             
-            # Get generated questions from the form
-            questions_text = request.POST.get('generated_questions', '')
-            print('questions_text: ')
-            print(questions_text)
-            # Split the questions by newline
-            questions_list = questions_text.split('\n')
-            print(len(questions_list))
-            # Iterate over the questions and create Question objects
-            for i, question_text in enumerate(questions_list, start=1):
-                 Question.objects.create(id=str(test.id) + str(i), test=test, number=i, text=question_text, )
+            if created:  
+                # Get generated questions from the form
+                questions = request.POST.getlist('questions[]')
+                print('questions: ')
+                print(questions)
+
+                # Iterate over the questions and create Question objects
+                for index, question in enumerate(questions, start=1):
+                    Question.objects.create(
+                        id=f"{test.id}{index}",
+                        test=test,
+                        number=index,
+                        text=question
+                        )
+                    
         except Exception as e:
             print(e)
             return HttpResponseServerError("An error occurred while saving the test and questions.")
@@ -157,10 +153,27 @@ def generate_link(request):
         test_page_url = reverse('test_page', args=[test.id])
         # Assign the URL to the link attribute of the test object
         test.link = test_page_url
-        return render(request, 'teacher_screen.html', {'test_page_url': test_page_url})  
+        test.save()
+        return render(request, 'test_link.html', {'test_page_url': test_page_url,
+                                                  'grade': grade,
+                                                  'skill': skill,
+                                                  'subject': subject,
+                                                  'test_title': test_title})  
+    print("get request")
+    return render(request, 'generated_test.html')
 
-    return render(request, 'test_link.html')
+# def display_link(request):
+#     print("display link view")
+#     return render(request, 'test_link.html')
 
+def display_link(request, test_page_url, grade, skill, subject, test_title):
+    return render(request, 'test_link.html', {
+        'test_page_url': test_page_url,
+        'grade': grade,
+        'skill': skill,
+        'subject': subject,
+        'test_title': test_title
+    })
 
 # View for displaying the test page
 def test_page(request, test_id):
