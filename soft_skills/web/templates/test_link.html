@@ -1,16 +1,135 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test Link</title>
-</head>
-<body>
-    <h1>Your Test Link</h1>
-    <p>Grade: {{ grade }}</p>
-    <p>Skill: {{ skill }}</p>
-    <p>Subject: {{ subject }}</p>
-    <p>Test Title: {{ test_title }}</p>
-    <p>Test Page URL: <a href="{{ test_page_url }}">{{ test_page_url }}</a></p>
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block title %}
+Test Link
+{% endblock %}
+
+{% block css %}
+<style>
+    body {
+        background-color: white;
+        margin: 0;
+        padding: 0;
+    }
+    .header {
+        background-color: #006349;
+        width: 100%;
+        padding: 70px 0;
+        box-sizing: border-box;
+        text-align: center;
+        color: white;
+    }
+    .title-box {
+        background-color: white;
+        color: #009150;
+        padding: 20px;
+        border-radius: 0px;
+        text-align: center;
+        max-width: 600px;
+        margin: -50px auto 0 auto;
+        box-shadow: 0 30px 70px rgba(0, 0, 0, 0.1);
+    }
+    .questions-container {
+        max-width: 1270px;
+        margin: 20px auto;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .link-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    .link-box {
+        margin: 20px 0;
+        background-color: #f1f1f1;
+        padding: 10px;
+        border-radius: 5px;
+        width: 80%;
+        text-align: center;
+        width: 400px;
+        height: 150px;
+        top: 550px;
+        left: 456px;
+        gap: 0px;
+        opacity: 0px;
+        background: #FFFFFF;
+        border: 1px solid #006349;
+
+    }
+    .link-box p {
+    margin: 0;
+    font-size: 18px;
+    direction: rtl;
+    }
+    .link-box a {
+        font-size: 18px;
+        color: #009150;
+        text-decoration: none;
+    }
+    .copy-button {
+        background-color: #4deba4;
+        color: white;
+        border: none;
+        padding: 10px;
+        cursor: pointer;
+        border-radius: 5px;
+        margin-top: 10px;
+    }
+    .copy-button:hover {
+        background-color: #3fb78c;
+    }
+    .header-text {
+        position: absolute;
+        top: 25px;
+        left: 20px;
+        color: white;
+        font-size: 14px;
+        font-family: Arial Rounded MT Bold;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="header">
+    <div class="header-text">BEYOND GRADES</div>
+</div>
+<div class="title-box">
+    <h2 style="font-size: 24px; color: #009150">קישור לשאלון בנושא {{ test_title }}</h2>
+    <h2 style="font-size: 18px; color: black">{{ skill }} ∙ כיתה {{ grade }}</h2>
+</div>
+<div class="questions-container">
+
+    <div class="triangle-box">
+        <div class="link-container">
+            <div class="link-box">
+                <label for="test-url"></label><br>
+                <p> קישור שאלון: <a id="test-link" href="{{ test_page_url }}">{{ test_page_url }}</a></p>
+
+                <button class="copy-button" onclick="copyToClipboard()">העתקת הקישור</button>
+            </div>
+        </div>
+    </div>
+    <button type="button" onclick="redirectToCreateQuestions()">יצירת שאלון חדש</button>
+</div>
+
+<script>
+    function copyToClipboard() {
+        const link = document.getElementById('test-link').href;
+        const input = document.createElement('input');
+        input.value = link;
+        document.body.appendChild(input);
+        input.select();
+        document.execCommand('copy');
+        document.body.removeChild(input);
+        alert('Link copied to clipboard');
+    }
+
+    function redirectToCreateQuestions() {
+        window.location.href = "{% url 'create_questions' %}";
+    }
+</script>
+{% endblock %}

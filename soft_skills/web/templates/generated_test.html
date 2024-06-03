@@ -263,10 +263,28 @@ Generated Questions
     }
 
     function deleteQuestion(questionId) {
-        // Remove the question element from the page
-        const questionElement = document.getElementById(`question-${questionId}`);
-        questionElement.remove();
-    }
+    // Remove the question element from the page
+    const questionElement = document.getElementById(`question-${questionId}`);
+    questionElement.remove();
+
+    // Update the hidden input fields and question numbers
+    updateQuestionDetails();
+}
+
+function updateQuestionDetails() {
+    const questions = document.querySelectorAll('.triangle-box');
+    questions.forEach((question, index) => {
+        const questionNumber = index + 1;
+        const questionId = question.getAttribute('data-question-id');
+
+        // Update the question number display
+        question.querySelector('.question-number').textContent = questionNumber;
+
+        // Update the hidden input field
+        const hiddenInput = document.getElementById(`hidden-question-${questionId}`);
+        hiddenInput.value = question.querySelector('.question-text').textContent.trim();
+    });
+}
 
     // Close the menu when clicking outside
     document.addEventListener('click', function() {

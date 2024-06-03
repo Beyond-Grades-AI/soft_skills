@@ -1,5 +1,3 @@
-<!-- templates/generated_test.html -->
-
 {% extends 'base.html' %}
 
 {% block title %}
@@ -40,42 +38,58 @@ Generated Questions
         align-items: center;
     }
     .triangle-box {
-        width: 0;
-        height: 0;
-        border-left: 635px solid transparent;
-        border-right: 635px solid transparent;
-        border-bottom: 91px solid #f9f9f9;
+        width: 100%;
+        max-width: 600px;
+        background-color: #f9f9f9;
         margin: 10px 0;
-        position: relative;
+        padding: 20px;
+        border-radius: 10px;
         box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        position: relative;
     }
+
     .triangle-box .question-text {
-        position: absolute;
-        top: 50%; /* Center vertically */
-        left: 50%; /* Center horizontally */
-        transform: translate(-50%, -50%); /* Translate to center */
-        width: 80%; /* Adjust as needed to fit text */
         font-family: 'Noto Sans Hebrew New', sans-serif;
         font-size: 16px;
         font-weight: 400;
         line-height: 1.3;
+        color: #454545;
         text-align: right;
-        white-space: normal; /* Ensure the text wraps within the container */
+        direction: rtl;
+        white-space: normal;
+    }
+
+    .triangle-box .question-number {
+        display: inline-block;
+        background-color: #4deba4;
+        color: #454545;
+        padding: 5px 10px;
+        border-radius: 2px;
+        margin-right: -10px;
+    }
+    .question-container {
+        display: flex;
+        align-items: center;
+    }
+
+    .question-text-container {
+        flex-grow: 1;
     }
     .triangle-box .menu-button {
         position: absolute;
-        top: 50%;
-        left: 5%; /* Position inside the left edge of the triangle */
-        transform: translate(-50%, -50%);
+        top: 10px;
+        left: 10px;
         background: none;
         border: none;
         cursor: pointer;
     }
+
     .triangle-box .menu-button .dots {
         display: flex;
         flex-direction: column;
         align-items: center;
     }
+
     .triangle-box .menu-button .dots span {
         display: block;
         width: 6px;
@@ -84,51 +98,216 @@ Generated Questions
         border-radius: 50%;
         margin: 2px 0;
     }
+
+    .triangle-box .menu {
+        display: none; /* Hidden by default */
+        position: absolute;
+        top: 30px;
+        left: 10px;
+        background-color: white;
+        border: 1px solid #ddd;
+        box-shadow: 0px 0px 27.2px 0px #0000001C;
+        z-index: 1;
+    }
+
+    .triangle-box .menu button {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        text-align: left;
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .triangle-box .menu button:hover {
+        background-color: #f1f1f1;
+    }
+
+    .header-text {
+        position: absolute;
+        top: 25px;
+        left: 20px;
+        color: white;
+        font-size: 14px;
+        font-family: Arial Rounded MT Bold;
+    }
+
+    .edit-form {
+        display: none; /* Hidden by default */
+        margin-top: 10px;
+        font-family: 'Noto Sans Hebrew New', sans-serif;
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 1.3;
+        color: #454545;
+        text-align: right;
+        direction: rtl;
+        white-space: normal;
+    }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="header">
-    <h1>שאלון בנושא {{ test_title }}</h1>
+    <div class="header-text">BEYOND GRADES</div>
 </div>
 <div class="title-box">
-    <h2>{{ subject }}</h2>  
-    <h3>כיתה {{ grade }}</h3>
+    <h2 style="font-size: 24px; color: #009150">שאלון בנושא {{ test_title }}</h2>
+    <h2 style="font-size: 18px; color: black">{{ skill }} ∙ כיתה {{ grade }}</h2>
 </div>
-<div class="questions-container">
-    {% for question in generated_questions %}
-        <div class="triangle-box">
-            <button class="menu-button" onclick="handleMenuClick()">
-                <div class="dots">
-                    <span></span>
-                    <span></span>
-                    <span></span>
+<div class="questions-container" id="questions-container">
+    <form method="post" id="questions-form" action="{% url 'generate_link' %}">
+        {% csrf_token %}
+        <input type="hidden" name="grade" value="{{ grade }}">
+        <input type="hidden" name="test_title" value="{{ test_title }}">
+        <input type="hidden" name="skill" value="{{ skill }}">
+        <input type="hidden" name="subject" value="{{ subject }}">
+        <input type="hidden" name="test_id" value="{{ test_id }}">
+        {% for question in generated_questions %}
+            <div class="triangle-box" id="question-{{ question.id }}">
+                <button class="menu-button" onclick="toggleMenu(event)">
+                    <div class="dots">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </button>
+                <div class="menu">
+                    <button type="button" onclick="showEditForm('{{ question.id }}')">Edit</button>
+                    <button type="button" onclick="deleteQuestion('{{ question.id }}')">Delete</button>
+                    <button type="button" onclick="moveUp('{{ question.id }}')">Move Up</button>
+                    <button type="button" onclick="moveDown('{{ question.id }}')">Move Down</button>
                 </div>
-            </button>
-            <div class="question-text">
-                {{ question }}
+                <div class="question-text" id="question-text-{{ question.id }}">
+                    <span class="question-number">{{ forloop.counter }}</span> {{ question }}
+                </div>
+                <div class="edit-form" id="edit-form-{{ question.id }}">
+                    <input type="text" id="edit-input-{{ question.id }}" value="{{ question }}" />
+                    <button type="button" onclick="saveQuestion('{{ question.id }}')">Save</button>
+                    <button type="button" onclick="cancelEdit('{{ question.id }}')">Cancel</button>
+                </div>
+                <input type="hidden" name="questions[]" id="hidden-question-{{ question.id }}" value="{{ question }}">
             </div>
-        </div>
-    {% endfor %}
+        {% endfor %}
+        <button type="submit">יצירת קישור לשאלון</button>
+    </form>
 </div>
-{% endblock %}
 
 {% block scripts %}
 <script>
-    function handleMenuClick() {
-        console.log("test");
-        // You can also use alert("test") to display a pop-up message.
+    function toggleMenu(event) {
+        event.preventDefault(); // Prevent default form submission
+
+        console.log('toggleMenu function called');
+        // Close any open menus
+        document.querySelectorAll('.menu').forEach(menu => {
+            menu.style.display = 'none';
+        });
+
+        // Open the clicked menu
+        const menu = event.currentTarget.nextElementSibling;
+        menu.style.display = 'block';
+
+        // Stop propagation to avoid closing the menu immediately
+        event.stopPropagation();
     }
+
+    function showEditForm(questionId) {
+        // Hide all edit forms
+        document.querySelectorAll('.edit-form').forEach(form => {
+            form.style.display = 'none';
+        });
+
+        // Show the specific edit form
+        const form = document.getElementById(`edit-form-${questionId}`);
+        form.style.display = 'block';
+
+        // Hide the question text
+        const questionTextElement = document.getElementById(`question-text-${questionId}`);
+        questionTextElement.style.display = 'none';
+
+        // Close the menu
+        document.querySelectorAll('.menu').forEach(menu => {
+            menu.style.display = 'none';
+        });
+    }
+
+    function cancelEdit(questionId) {
+        // Hide the edit form
+        const form = document.getElementById(`edit-form-${questionId}`);
+        form.style.display = 'none';
+
+        // Show the question text
+        const questionTextElement = document.getElementById(`question-text-${questionId}`);
+        questionTextElement.style.display = 'block';
+    }
+
+    function saveQuestion(questionId) {
+        const input = document.getElementById(`edit-input-${questionId}`);
+        const questionText = input.value;
+
+        // Update the hidden input field
+        const hiddenInput = document.getElementById(`hidden-question-${questionId}`);
+        hiddenInput.value = questionText;
+
+        // Update the displayed question text
+        const questionTextElement = document.getElementById(`question-text-${questionId}`);
+        questionTextElement.innerHTML = `<span class="question-number">${questionId}</span> ${questionText}`;
+
+        // Hide the edit form and show the updated question text
+        cancelEdit(questionId);
+    }
+
+    function deleteQuestion(questionId) {
+        // Remove the question element from the page
+        const questionElement = document.getElementById(`question-${questionId}`);
+        questionElement.remove();
+        updateQuestionNumbers();
+    }
+
+    function moveUp(questionId) {
+        const questionElement = document.getElementById(`question-${questionId}`);
+        const previousElement = questionElement.previousElementSibling;
+
+        if (previousElement) {
+            questionElement.parentNode.insertBefore(questionElement, previousElement);
+            updateQuestionNumbers();
+        }
+    }
+
+    function moveDown(questionId) {
+        const questionElement = document.getElementById(`question-${questionId}`);
+        const nextElement = questionElement.nextElementSibling;
+
+        if (nextElement) {
+            questionElement.parentNode.insertBefore(nextElement, questionElement);
+            updateQuestionNumbers();
+        }
+    }
+
+    function updateQuestionNumbers() {
+        const questions = document.querySelectorAll('.triangle-box');
+        questions.forEach((question, index) => {
+            const questionNumber = question.querySelector('.question-number');
+            questionNumber.textContent = index + 1;
+        });
+    }
+
+    // Close the menu when clicking outside
+    document.addEventListener('click', function() {
+        document.querySelectorAll('.menu').forEach(menu => {
+            menu.style.display = 'none';
+        });
+    });
+
+    // Prevent the menu from closing when clicking inside the menu
+    document.querySelectorAll('.menu').forEach(menu => {
+        menu.addEventListener('click', function(event) {
+            event.stopPropagation();
+        });
+    });
 </script>
 {% endblock %}
-
-
-
-
-{% if test_page_url %}
-<div>
-    <a href="{{ test_page_url }}" class="link-to-survey">קישור לשאלון</a>
-    <!-- Button to copy link -->
-    <button id="copyButton">העתק קישור</button>
-</div>
-{% endif %}
+{% endblock %}
