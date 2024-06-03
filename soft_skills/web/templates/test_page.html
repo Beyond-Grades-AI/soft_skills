@@ -1,9 +1,11 @@
-<!-- test_page.html -->
-
 {% extends 'base.html' %}
-{%  block css %}
+{% block title %}
+Test Page
+{% endblock %}
+
+{% block css %}
 <style>
-body {
+    body {
         background-color: white;
         margin: 0;
         padding: 0;
@@ -13,6 +15,8 @@ body {
         width: 100%;
         padding: 70px 0;
         box-sizing: border-box;
+        text-align: center;
+        color: white;
     }
     .title-box {
         background-color: white;
@@ -21,48 +25,135 @@ body {
         border-radius: 0px;
         text-align: center;
         max-width: 600px;
-        margin: -50px auto 0 auto; /* Adjusted margin to move it down */
-        box-shadow: 0 30px 70px rgba(0, 0, 0, 0.1); /* Added shadow */
-    }
-    .title-container {
-        text-align: center;
-        margin-top: 50px; /* Adjust as needed */
-    }
-    .tests-container {
-        max-width: 800px;
-        margin: 0 auto;
-        padding: 20px;
-        background-color: #fff;
-        border-radius: 10px;
-        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        margin: -50px auto 0 auto;
+        box-shadow: 0 30px 70px rgba(0, 0, 0, 0.1);
     }
     .header-text {
         position: absolute;
         top: 25px;
         left: 20px;
         color: white;
-            font-size: 14px; /* Adjust size as needed */
-        font-family: Arial Rounded MT Bold; /* Change to your preferred font */
-        {#font-weight: bold; /* Use 'normal' if you don't want it bold */#}
+        font-size: 14px;
+        font-family: Arial Rounded MT Bold;
+    }
+    .form-container {
+        max-width: 900px;
+        margin: 40px auto;
+        padding: 20px;
+        background-color: transparent;
+    }
+    .form-container h3,
+    .form-container h4 {
+        color: black;
+        text-align: right;
+        font-size: 21px;
+        font-weight: normal;
+        font-family: Noto Sans Hebrew New;
+        margin-bottom: 20px;
+        direction: rtl;
+
+    }
+    .form-container input[type="text"],
+    .form-container textarea,
+    .form-container input[type="checkbox"] {
+        width: calc(100% - 20px);
+        margin: 10px 0;
+        padding: 15px;
+        border: 2px solid #eaeaea;
+        border-radius: 10px;
+        box-sizing: border-box;
+        font-size: 1.2rem;
+        transition: border-color 0.3s ease;
+        direction: rtl;
+        text-align: right;
+    }
+    .form-container input[type="file"]:focus,
+    .form-container textarea:focus,
+    .form-container input[type="text"]:focus,
+    .form-container select:focus {
+        border-color: #007bff;
+        outline: none;
+    }
+    .form-container button {
+        width: 20%;
+        padding: 8px;
+        background-color: #006349;
+        color: #fff;
+        text-align: center;
+        border: none;
+        border-radius: 30px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        font-size: 1.2rem;
+        margin-top: 20px;
+    }
+    .form-container button:hover {
+        background-color: #004727;
+    }
+    .question-container {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 20px;
+        direction: rtl;
+        text-align: right;
+    }
+    .vertical-line {
+        position: relative;
+        width: 3px;
+        background-color: #009150;
+        margin-left: 10px;
+    }
+    .vertical-line .question-number {
+        position: absolute;
+        left: -10px;
+        background-color: #4deba4;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 2px;
+        font-family: 'Noto Sans Hebrew New', sans-serif;
+        font-size: 16px;
+        font-weight: bold;
+    }
+    .triangle-box {
+        background-color: #f9f9f9;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        position: relative;
+        flex-grow: 1;
+    }
+    .triangle-box .question-text {
+        font-family: 'Noto Sans Hebrew New', sans-serif;
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 1.3;
+        color: #454545;
+        white-space: normal;
+    }
+    .triangle-box textarea {
+        width: calc(100% - 20px);
+        margin: 10px 0;
+        padding: 15px;
+        border: 2px solid #eaeaea;
+        border-radius: 10px;
+        box-sizing: border-box;
+        font-size: 1.2rem;
+        transition: border-color 0.3s ease;
+        direction: rtl;
+        text-align: right;
     }
 </style>
 {% endblock %}
-/* CSS styles */
-div {
-    margin-bottom: 10px; /* Add some margin between the input boxes */
-}
-
-
-{% block title %}
-Test Page
-{% endblock %}
 
 {% block content %}
-    <div class="header">
-<div class="header-text">BEYOND GRADES</div>
+<div class="header">
+    <div class="header-text">BEYOND GRADES</div>
 </div>
-    <h1>Test Page</h1>
-    print("{{ test.id }}")
+<div class="title-box">
+    <h2 style="font-size: 24px; color: #009150">שאלון בנושא {{ test.title }}</h2>
+    <h2 style="font-size: 18px; color: black">{{ skill }} ∙ כיתה {{ test.grade }}</h2>
+</div>
+<div class="form-container">
     <form method="post" action="{% url 'submit_answers' %}">
         {% csrf_token %}
         <input type="hidden" name="test_id" value="{{ test.id }}">
@@ -73,22 +164,32 @@ Test Page
         {% endif %}
 
         <div>
-            <label for="full_name">שם מלא:</label>
+            <h4>שם מלא:</h4>
             <input type="text" name="full_name" id="full_name" required>
         </div>
         <div>
-            <label for="email">אימייל:</label>
+            <h4>אימייל:</h4>
             <input type="text" name="email" id="email" required>
         </div>
-        <ul>
-            {% for question in questions %}
-                <li>{{ question.text }}</li>
-                <textarea name="answer_{{ question.id }}" rows="3" cols="30"></textarea> <!-- Textarea for answering -->
-            {% endfor %}
-        </ul>
-        <label for="test">Test:</label>
-        <input type="checkbox" name="test" id="test" checked>
+     
+
+        {% for question in questions %}
+        <div class="question-container">
+            <div class="vertical-line">
+                <div class="question-number">{{ forloop.counter }}</div>
+            </div>
+            <div class="triangle-box">
+                <p class="question-text">{{ question.text }}</p>
+                <textarea name="answer_{{ question.id }}" rows="3" cols="30"></textarea>
+            </div>
+        </div>
+        {% endfor %}
+
+        <div>
+            <label for="test">Test:</label>
+            <input type="checkbox" name="test" id="test" checked>
+        </div>
         <button type="submit">הגשה</button>
     </form>
+</div>
 {% endblock %}
-

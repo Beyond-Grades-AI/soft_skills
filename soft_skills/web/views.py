@@ -126,7 +126,8 @@ def generate_link(request):
                     'teacher': teacher,
                     'title': test_title,
                     'subject': subject,
-                    'skill': skill
+                    'skill': skill,
+                    'grade': grade
                 }
             )
             
@@ -184,7 +185,7 @@ def test_page(request, test_id):
         questions = test.questions.all()  # Assuming a related_name of 'questions' in Test model
 
         if questions:
-            return render(request, 'test_page.html', {'questions': questions, 'test': test})
+            return render(request, 'test_page.html', {'questions': questions, 'test': test, 'grade': test.grade, 'skill': test.skill})
         else:
             return render(request, 'test_page.html', {'error_message': 'No questions found for this test.'})
     except Test.DoesNotExist:
