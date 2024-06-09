@@ -30,17 +30,24 @@
 # # Close the cursor and connection
 # cursor.close()
 # conn.close()
-
+import os
 import sqlite3
 import pandas as pd
 
-db_path = '../db.sqlite3'
+
+
+def find_file_path(file_name, start_dir="."):
+    for root, dirs, files in os.walk(start_dir):
+        if file_name in files:
+            return os.path.join(root, file_name)
+    return None
 
 
 def get_table_names():
-    global db_path
+    db_path1 = find_file_path('db.sqlite3')
+    # print(f"db path {db_path1}")
     # Connect to the SQLite database
-    conn = sqlite3.connect(db_path)
+    conn = sqlite3.connect(db_path1)
     cursor = conn.cursor()
 
     # Execute the query to get the names of all tables
@@ -59,9 +66,9 @@ def get_table_names():
 
 
 def get_columns_names_from_table(tbl_name):
-    global db_path
+    db_path1 = find_file_path('db.sqlite3')
     # Connect to the SQLite database
-    conn = sqlite3.connect(db_path)
+    conn = sqlite3.connect(db_path1)
     cursor = conn.cursor()
     cursor.execute(f"PRAGMA table_info({tbl_name});")
     columns_info = cursor.fetchall()
@@ -78,9 +85,9 @@ def get_columns_names_from_table(tbl_name):
 
 
 def fetch_data_from_table(table_name):
-    global db_path
+    db_path1 = find_file_path('db.sqlite3')
     # Connect to the SQLite database
-    conn = sqlite3.connect(db_path)
+    conn = sqlite3.connect(db_path1)
     cursor = conn.cursor()
 
     # Execute the query to retrieve all data from the specified table
@@ -100,9 +107,9 @@ def fetch_data_from_table(table_name):
 
 
 def update_origin_eval(question_id, new_string):
-    global db_path
+    db_path1 = find_file_path('db.sqlite3')
     # Connect to the SQLite database
-    conn = sqlite3.connect(db_path)
+    conn = sqlite3.connect(db_path1)
     cursor = conn.cursor()
 
     # Define the update query
@@ -142,7 +149,6 @@ def update_origin_eval(question_id, new_string):
 
 
 def get_questions_answers_test_df():
-    global db_path
     # Fetch the data from the table
     column_names, rows = fetch_data_from_table('web_answer')
     # Create a DataFrame from the fetched data

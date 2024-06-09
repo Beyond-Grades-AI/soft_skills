@@ -6,7 +6,33 @@
 {% block title %}
 soft skills
 {% endblock %}
-
+{% block css %}
+    <style>
+    body {
+        background-color: white;
+        margin: 0;
+        padding: 0;
+    }
+    .header {
+        background-color: #006349;
+        width: 100%;
+        padding: 70px 0;
+        box-sizing: border-box;
+        text-align: center;
+        color: white;
+    }
+    .title-box {
+        background-color: white;
+        color: #009150;
+        padding: 20px;
+        border-radius: 0px;
+        text-align: center;
+        max-width: 600px;
+        margin: -50px auto 0 auto;
+        box-shadow: 0 30px 70px rgba(0, 0, 0, 0.1);
+    }
+    </style>
+{% endblock %}
 {% block content %}
 
 <h1>תשובתך הוגשה בהצלחה!</h1>

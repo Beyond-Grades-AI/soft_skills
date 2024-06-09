@@ -3,8 +3,10 @@ import time
 from .DataManager import read_text_file, save_text_to_file, find_file_path
 from cryptography.fernet import Fernet
 from .PromptBuilder import *
-from data_manager.DataReader import get_questions_answers_test_df, update_origin_eval
-#from soft_skills.data_manager.DataReader import update_origin_eval, get_questions_answers_test_df
+from .DataReader import get_questions_answers_test_df, update_origin_eval, get_table_names
+
+
+# from soft_skills.data_manager.DataReader import update_origin_eval, get_questions_answers_test_df
 
 
 def decrypt():
@@ -32,12 +34,16 @@ def activate_lm(prompt):
                     "content": prompt,
                 }
             ],
-            model="gpt-3.5-turbo",
+            model="gpt-4-turbo",
         )
         return response
     except Exception as e:
         print(f"An error occurred while activating the lm: {e}")
         return None
+
+
+def remove_numbering(questions):
+    return [question.split('. ', 1)[1] if '. ' in question else question for question in questions]
 
 
 def create_questions(topic, soft_skill, use_ml=False, num_questions=5):
@@ -53,8 +59,8 @@ def create_questions(topic, soft_skill, use_ml=False, num_questions=5):
         if response is not None:
             response_text = response.choices[0].message.content
             questions_list = response_text.split('\n')  # Assuming each question is on a new line
-            return [question.strip() for question in questions_list if
-                    question.strip()]  # Remove any empty lines and leading/trailing spaces
+            return remove_numbering([question.strip() for question in questions_list if
+                                     question.strip()])  # Remove any empty lines and leading/trailing spaces
         return ["Error occurred. Try again later"]
     else:
         questions_prompt = read_text_file("exmpl_qest.txt")
@@ -86,27 +92,23 @@ def evaluate_answers(answer, question, soft_skill):
 
 # Function to simulate checking and evaluating answers
 def check_and_evaluate_answers():
-    while True:
-        answer_df, question_df, test_df = get_questions_answers_test_df()
-        if not answer_df.empty:
-            for i in range(len(answer_df)):
-                try:
-                    answer_str = answer_df['answer_text'].iloc[i]
-                    question_id = answer_df['question_id'].iloc[i]
-                    question_str = question_df[question_df['id'] == question_id]['text'].values[0]
-                    test_id = question_df[question_df['id'] == question_id]['test_id'].values[0]
-                    skill_str = test_df[test_df['id'] == test_id]['skill'].values[0]
+    answer_df, question_df, test_df = get_questions_answers_test_df()
+    if not answer_df.empty:
+        for i in range(len(answer_df)):
+            try:
+                answer_str = answer_df['answer_text'].iloc[i]
+                question_id = answer_df['question_id'].iloc[i]
+                question_str = question_df[question_df['id'] == question_id]['text'].values[0]
+                test_id = question_df[question_df['id'] == question_id]['test_id'].values[0]
+                skill_str = test_df[test_df['id'] == test_id]['skill'].values[0]
 
-                    eval_str = evaluate_answers(answer_str, question_str, skill_str)
+                eval_str = evaluate_answers(answer_str, question_str, skill_str)
 
-                    update_origin_eval(f"{question_id}", eval_str)
-                except Exception as e:
-                    print(f"Error evaluating answers: {e}")
-                    print("Sleeping for 5 minutes before retrying...")
-                    time.sleep(300)  # Sleep for 5 minutes
-                    break
-        else:
-            print("No answers to evaluate. Sleeping...")
-
-        # Sleep for a specified duration (e.g., 5 minutes)
-        time.sleep(300)  # 300 seconds = 5 minutes
+                update_origin_eval(f"{question_id}", eval_str)
+            except Exception as e:
+                print(f"Error evaluating answers: {e}")
+                print("Sleeping for 5 minutes before retrying...")
+                time.sleep(300)  # Sleep for 5 minutes
+                break
+    else:
+        print("No answers to evaluate. Sleeping...")

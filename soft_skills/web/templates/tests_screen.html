@@ -73,7 +73,7 @@ Soft Skills
 <div class="header-text">BEYOND GRADES</div>
 </div>
     <div class="title-box">
-        <h1 style="font-size: 34px;">בדיקת מבחנים</h1>
+        <h1 style="font-size: 34px;">בדיקת הגשות</h1>
     </div>
 <div class="title-container">
     <div class="tests-container">
@@ -81,36 +81,27 @@ Soft Skills
         <form method="post" action="{% url 'tests_screen' %}">
             {% csrf_token %}
             <select name="test_id">
-                <option value="" disabled selected>מספר מבחן</option>
+                <option style="text-align:center;" value="" disabled selected>שם המבחן</option>
                 {% for test in tests %}
-                    <option value="{{ test.id }}">{{ test.id }}</option>
+                    <option  value="{{ test.id }}">{{ test.title }}</option>
                 {% endfor %}
             </select>
             <button type="submit">בדוק מבחן</button>
         </form>
         {% if students %}
-            <h2>רשימת תלמידים:</h2>
+            <h2>:רשימת תלמידים</h2>
             <table>
                 <thead>
                     <tr>
-                        <th>Student Name</th>
-                        <th>Student Email</th>
-                        <th>Test Evaluated</th>
-                        <th>Action</th>
+                        <th>לינק למבחן</th>
+                        <th>האם הערכה בוצעה</th>
+                        <th>אימייל תלמיד/ה</th>
+                        <th>שם תלמיד/ה</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for student in students %}
                     <tr>
-                        <td>{{ student.first_name }}</td>
-                        <td>{{student.student_id}}</td>
-                        <td>
-                            {% if test in student.tests.all %}
-                                בוצעה
-                            {% else %}
-                                לא בוצעה
-                            {% endif %}
-                        </td>
                         <td>
                             {% if test in student.tests.all %}
                                 <a href="{% url 'review_test' test.id student.student_id %}">Review Test</a>
@@ -119,6 +110,15 @@ Soft Skills
                                 <!-- Handle the case where the test is not done -->
                                 <!-- Maybe provide a link to take the test -->
                             {% endif %}
+                    <td>
+                            {% if test in student.tests.all %}
+                                בוצעה
+                            {% else %}
+                                לא בוצעה
+                            {% endif %}
+                        </td>
+                        <td>{{student.student_id}}</td>
+                        <td>{{ student.first_name }}</td>
                         </td>
                     </tr>
                     {% endfor %}
