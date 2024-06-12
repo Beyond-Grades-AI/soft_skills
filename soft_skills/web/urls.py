@@ -16,6 +16,7 @@ urlpatterns = [
     path('submitted/', views.submitted, name='submitted'),
     path('tests_screen/', views.tests_screen, name='tests_screen'),
     path('review_test/<int:test_id>/<str:student_id>', views.review_test, name='review_test'),
+    path('test_feedback/', views.test_feedback, name='test_feedback'),
     path('failure_url/', views.failure_url, name='failure_url'),
 
 ]

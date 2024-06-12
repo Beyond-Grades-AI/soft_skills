@@ -76,6 +76,10 @@ def create_questions(request):
             return HttpResponseServerError("Please fill in all required fields and provide input text or upload a file.")
 
         creation_date = timezone.now()
+        print('*************')
+        current_date_str = creation_date.strftime('%d-%m-%Y')
+        print(current_date_str)
+        print('*************')
         test_id = int(creation_date.timestamp())  # Generate a unique test ID using the creation date
 
         # Render the teacher screen with generated questions
@@ -85,7 +89,7 @@ def create_questions(request):
             'subject': subject,
             'grade': grade,
             'test_title': test_title,
-            'test_id': test_id
+            'test_id': test_id,
             })
 
     # Render the teacher screen without generated questions if GET request
@@ -107,6 +111,8 @@ def generate_link(request):
         skill = request.POST.get('skill')
         grade = request.POST.get('grade')
         test_title = request.POST.get('test_title')
+        current_time = timezone.now()
+        current_time_str = current_time.strftime('%d-%m-%Y')
         print(f"(post request) skill: {skill} subject: {subject}, grade: {grade}, test_title: {test_title}")
 
         if not (subject and skill):
@@ -282,6 +288,18 @@ def tests_screen(request):
         test = Test.objects.get(id=test_id)
         student_submitted = test.students.all()
         return render(request, 'tests_screen.html', {'test_id': test_id, 'students': student_submitted, 'test': test, 'tests': teacher_tests})
+
+def test_feedback(request):
+    print('START OF TEST FEEDBACK IN VIEWS')
+    if request.method == 'POST':
+        test_id = request.POST.get('test_id')
+        print("Test ID:", test_id)  # Debug print statement
+        test = Test.objects.get(id=test_id)
+        student_submitted = test.students.all()
+        students_submitted_count = test.students.count()
+        print('Count: ', students_submitted_count)
+        return render(request, 'test_feedback.html', {'students' : student_submitted, 'count' : students_submitted_count, 'test' : test})
+    print('THE END OF TEST FEEDBACK IN VIEWS')
 
 # View for reviewing a test and handling evaluations
 def review_test(request, test_id, student_id ):
