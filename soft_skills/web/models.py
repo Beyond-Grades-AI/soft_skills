@@ -8,7 +8,7 @@ class Test(models.Model):
     skill = models.CharField(max_length=100)  # Field to store skill
     subject = models.CharField(max_length=100)  # Field to store subject
     # sub_topic = models.CharField(max_length=100)  # Field to store sub-topic
-    # creation_date = models.DateField(auto_now_add=True)  # Automatically set the creation date to the current date when the object is created
+    #creation_date = models.DateField(auto_now_add=True)  # Automatically set the creation date to the current date when the object is created
     teacher = models.ForeignKey('Teacher', related_name='tests', on_delete=models.CASCADE)  # Field to store the teacher
     # link = models.URLField(max_length=200, blank=True, null=True)  # Field to store the URL link for the test
     grade = models.CharField(max_length=100)
