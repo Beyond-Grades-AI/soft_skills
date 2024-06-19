@@ -1,17 +1,38 @@
-{% extends 'base.html' %}
-
-{% block title %}
-Soft Skills - Review Test
-{% endblock %}
-
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="charset=UTF-8">
+    <title>test review</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+</head>
 {% block css %}
 <style>
-    /* Additional CSS specific to this screen */
+    body {
+        background-color: white;
+        margin: 0;
+        padding: 0;
+    }
+    .header {
+        background-color: #006349;
+        width: 100%;
+        padding: 70px 0;
+        box-sizing: border-box;
+    }
+    .title-box {
+        background-color: white;
+        padding: 20px;
+        border-radius: 0px;
+        text-align: center;
+        max-width: 600px;
+        margin: -50px auto 0 auto; /* Adjusted margin to move it down */
+        box-shadow: 0 30px 70px rgba(0, 0, 0, 0.1); /* Added shadow */
+    }
     .title-container {
         text-align: center;
         margin-top: 50px; /* Adjust as needed */
     }
-    .test-container {
+    .tests-container {
         max-width: 800px;
         margin: 0 auto;
         padding: 20px;
@@ -26,7 +47,7 @@ Soft Skills - Review Test
     th, td {
         padding: 10px;
         border-bottom: 1px solid #ddd;
-        text-align: left;
+        text-align: center;
     }
     th {
         background-color: #f2f2f2;
@@ -34,62 +55,71 @@ Soft Skills - Review Test
     tr:hover {
         background-color: #f5f5f5;
     }
-    .evaluation {
-        width: 100%;
-        height: 100px; /* Adjust as needed */
-        margin-bottom: 20px;
+    .header-text {
+        position: absolute;
+        top: 25px;
+        left: 20px;
+        color: white;
+            font-size: 14px; /* Adjust size as needed */
+        font-family: Arial Rounded MT Bold; /* Change to your preferred font */
+        {#font-weight: bold; /* Use 'normal' if you don't want it bold */#}
     }
-    .error-message {
-        color: red;
-        text-align: center;
-        margin-bottom: 20px;
+    #title_for_student_name{
+        color: #009150;
+    }
+    .hebrew{
+        direction: rtl;
+        text-align: right;
     }
 </style>
 {% endblock %}
-
-{% block content %}
-<div class="title-container">
-    <h1 style="font-size: 3rem;"> ההגשה של  {{ student_name }}</h1>
-    <h3 style="font-size: 3rem;">  {{ test.subject }}</h3>
-
-    <div class="test-container">
-        <h2>Test Questions:</h2>
-        <form method="post">
-            {% csrf_token %}
-            {% if error_message %}
-            <div class="error-message">{{ error_message }}</div>
-            {% endif %}
-            <table>
-                <thead>
-                    <tr>
-                        <th>Question</th>
-                        <th>Answer</th>
-                        <th>origin Evaluation</th>
-                        <th>teacher Evaluation</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for question, answer in question_answers_dict.items %}
-                    <tr>
-                        <td>{{ question.text }}</td>
-                        <td>{{ answer.answer_text }}</td>
-                        <td>{{ answer.origin_eval }}</td>
-                        <td>
-                            {% if answer.is_approved %}
-                                <span class="evaluation">{{ answer.approved_eval }}</span>
-                            {% else %}
-                                <textarea class="evaluation" name="evaluation_{{ question.id }}">{{ answer.origin_eval }}</textarea>
-                            {% endif %}
-                            <input type="hidden" name="question_id_{{ question.id }}" value="{{ question.id }}">
-                            <input type="hidden" name="test_id" value="{{ test.id }}">
-                            <input type="hidden" name="student_id" value="{{ student.student_id }}">
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            <button type="submit">Save Changes</button>
-        </form>
+<body>
+    {% block content %}
+    <div class="header">
+    <div class="header-text">BEYOND GRADES</div>
     </div>
-</div>
-{% endblock %}
+        <div class="title-box">
+            <h1 id="title_for_student_name" style="font-size: 34px;">ההגשה של {{student_name}}</h1>
+            <h4 class="text-secondary">
+                {{test.title}}
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dot" viewBox="0 0 16 16">
+                          <path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3"/>
+                    </svg>
+                {{test.skill}}
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dot" viewBox="0 0 16 16">
+                          <path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3"/>
+                    </svg>
+                כיתה {{test.grade}}
+            </h4>
+        </div>
+        <div class="accordion p-5" id="accordionPanelsStayOpenExample">
+            {% for question, answer in question_answers_dict.items %}
+                <div class="mb-3 text-end">
+                    <span class="hebrew fs-5"><strong>{{question.text}}</strong></span>
+                  <div class="hebrew p-3 mt-3 bg-secondary-subtle border border-secondary-subtle"><span>{{answer.answer_text}}</span></div>
+                </div>
+                <div class="mb-3 text-end">
+                  <label for="exampleFormControlTextarea{{ forloop.counter }}" class="form-label text-success fw-bold">משוב על התשובה</label>
+                  <textarea class="form-control border border-success text-end" id="exampleFormControlTextarea{{ forloop.counter }}" rows="3">{{answer.origin_eval}}</textarea>
+                </div>
+            {% endfor %}
+        <div class="text-end shadow p-3">
+            <label for="exampleFormControlTextarea" class="hebrew fs-5 mt-5 form-label text-success fw-bold">פידבק על ההגשה של {{student_name}}</label>
+            <textarea class="text-end form-control border border-success" id="exampleFormControlTextarea"  placeholder="הוספת פידבק כללי לתלמיד" rows="3">{{answer.origin_eval}}</textarea>
+            <form>
+                <div class="d-grid gap-2">
+                    <button type="button" class="m-3 btn btn-outline-success fw-bold">שמירה</button>
+                </div>
+            </form>
+        </div>
+        <div>
+            <a href="/tests_screen" role="button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="green" class="bi bi-arrow-left-circle-fill m-5" viewBox="0 0 16 16">
+                    <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0m3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z"/>
+                </svg>
+            </a>
+        </div>
+        {% endblock %}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

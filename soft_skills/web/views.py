@@ -320,7 +320,8 @@ def review_test(request, test_id, student_id ):
             print(q.text)
             answer = q.answers.all().filter(student_identifier=student_id).first() ####assuming there is only one result
             #answer = Answer.objects.get(question=question, student=student).first()
-
+            print('ANSWER: ', answer)
+            print('******************************************')
             question_answers_dict[q] = answer
 
         return render(request, 'review_test.html', {'test': test, 'student_name': student_name ,'student': student, 'question_answers_dict': question_answers_dict})
