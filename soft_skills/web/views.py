@@ -304,52 +304,50 @@ def test_feedback(request):
 # View for reviewing a test and handling evaluations
 def review_test(request, test_id, student_id ):
     print('review_test view!!')
+    # Retrieve the test object
+    clickable = True
+    test = Test.objects.get(id=test_id)
+    student = Student.objects.get(student_id=student_id)
+
+    student_name = f"{student.first_name} {student.last_name}"
+    question = test.questions.all()
+
+    # Create a dictionary to store questions and answers for the student
+    question_answers_dict = {}
+
+    for q in question:
+        print(q.text)
+        answer = q.answers.all().filter(student_identifier=student_id).first()  ####assuming there is only one result
+        # answer = Answer.objects.get(question=question, student=student).first()
+        print('ANSWER: ', answer)
+        print('******************************************')
+        question_answers_dict[q] = answer
+        if answer.is_approved:
+            clickable = False
+
+
     if request.method == 'GET':
         print('GET request')
-        # Retrieve the test object
-        test = Test.objects.get(id=test_id)
-        student = Student.objects.get(student_id=student_id)
-
-        student_name = f"{student.first_name} {student.last_name}"
-        question = test.questions.all()
-
-        # Create a dictionary to store questions and answers for the student
-        question_answers_dict = {}
-
-        for q in question:
-            print(q.text)
-            answer = q.answers.all().filter(student_identifier=student_id).first() ####assuming there is only one result
-            #answer = Answer.objects.get(question=question, student=student).first()
-            print('ANSWER: ', answer)
-            print('******************************************')
-            question_answers_dict[q] = answer
-
-        return render(request, 'review_test.html', {'test': test, 'student_name': student_name ,'student': student, 'question_answers_dict': question_answers_dict})
+        return render(request, 'review_test.html', {'test': test, 'student_name': student_name ,'student': student, 'question_answers_dict': question_answers_dict, 'clickable': clickable})
     else:
         print('POST request')
         # Retrieve the test object
         try:
+            print('***********************INSIDE POST REVIEW TEST*****************************')
             test = Test.objects.get(id=test_id)
         except Test.DoesNotExist:
             return redirect('failure_url')  # Redirect to an appropriate URL if the test is not found
 
         # Retrieve the submitted evaluations from the form data
-        submitted_evaluations = {}
-        for key, value in request.POST.items():
-            if key.startswith('evaluation_'):
-                question_id = key.split('_')[1]
-                submitted_evaluations[question_id] = value
-
-        # Update the evaluations for each question's answer
-        for question_id, evaluation in submitted_evaluations.items():
-            try:
-                answer = Answer.objects.get(question_id=question_id, student_identifier = student_id)
-                answer.approved_eval = evaluation
-                answer.is_approved = True
-                answer.save()
-            except Answer.DoesNotExist:
-                # Handle case where the answer is not found
-                pass
+        index = 1
+        for question, answer in question_answers_dict.items():
+            submitted_evaluation = request.POST.get(f'exampleFormControlTextarea{index}')
+            print('submitted = ', submitted_evaluation)
+            answer.approved_eval = submitted_evaluation
+            print(f'answer{index}: answer approved eval: {answer.approved_eval}')
+            answer.is_approved = True
+            answer.save()
+            index = index + 1
 
         ######################################################################
         # Retrieve the logged-in teacher's email from the session
@@ -366,7 +364,10 @@ def review_test(request, test_id, student_id ):
             # Handle case where teacher is not logged in
             return redirect('login_screen')
         ######################################################################
-        return render(request, 'tests_screen.html', {'tests': teacher_tests})
+        test = Test.objects.get(id=test_id)
+        student_submitted = test.students.all()
+        students_submitted_count = test.students.count()
+        return render(request, 'test_feedback.html', {'students' : student_submitted, 'count' : students_submitted_count, 'test' : test})
 
 def failure_url(request):
     return render(request, 'failure_url.html')

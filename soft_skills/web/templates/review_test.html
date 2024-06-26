@@ -92,7 +92,9 @@
                 כיתה {{test.grade}}
             </h4>
         </div>
-        <div class="accordion p-5" id="accordionPanelsStayOpenExample">
+        <form method="POST" action="{% url 'review_test' test.id student.student_id %}">
+            {% csrf_token %}
+            <div class="accordion p-5" id="accordionPanelsStayOpenExample">
             {% for question, answer in question_answers_dict.items %}
                 <div class="mb-3 text-end">
                     <span class="hebrew fs-5"><strong>{{question.text}}</strong></span>
@@ -100,24 +102,38 @@
                 </div>
                 <div class="mb-3 text-end">
                   <label for="exampleFormControlTextarea{{ forloop.counter }}" class="form-label text-success fw-bold">משוב על התשובה</label>
-                  <textarea class="form-control border border-success text-end" id="exampleFormControlTextarea{{ forloop.counter }}" rows="3">{{answer.origin_eval}}</textarea>
+                  <textarea class="form-control border border-success text-end" id="exampleFormControlTextarea{{ forloop.counter }}" name="exampleFormControlTextarea{{ forloop.counter }}" rows="3">
+                      {% if answer.is_approved %}
+                        {{answer.approved_eval}}
+                      {% else %}
+                        {{answer.origin_eval}}
+                      {% endif %}
+                  </textarea>
                 </div>
             {% endfor %}
-        <div class="text-end shadow p-3">
-            <label for="exampleFormControlTextarea" class="hebrew fs-5 mt-5 form-label text-success fw-bold">פידבק על ההגשה של {{student_name}}</label>
-            <textarea class="text-end form-control border border-success" id="exampleFormControlTextarea"  placeholder="הוספת פידבק כללי לתלמיד" rows="3">{{answer.origin_eval}}</textarea>
-            <form>
+            </div>
+            <div class="text-end shadow p-3">
+                <label for="exampleFormControlTextarea" class="hebrew fs-5 mt-5 form-label text-success fw-bold">פידבק על ההגשה של {{student_name}}</label>
+                <textarea class="text-end form-control border border-success" id="exampleFormControlTextarea"  placeholder="הוספת פידבק כללי לתלמיד" rows="3">{{answer.origin_eval}}</textarea>
                 <div class="d-grid gap-2">
-                    <button type="button" class="m-3 btn btn-outline-success fw-bold">שמירה</button>
+                    {% if clickable %}
+                        <button type="submit" class="m-3 btn btn-outline-success fw-bold">שמירה</button>
+                    {% else %}
+                        <button type="submit" disabled class="m-3 btn btn-outline-success fw-bold">שמירה</button>
+                    {% endif %}
                 </div>
-            </form>
-        </div>
+            </div>
+        </form>
         <div>
-            <a href="/tests_screen" role="button">
-                <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="green" class="bi bi-arrow-left-circle-fill m-5" viewBox="0 0 16 16">
-                    <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0m3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z"/>
-                </svg>
-            </a>
+            <form method="POST" action="{% url 'test_feedback' %}">
+                {% csrf_token %}
+                <input type="hidden" name="test_id" value="{{test.id}}">
+                <button type="submit" class="shadow-none border border-0 bg-body text-body m-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="green" class="bi bi-arrow-left-circle-fill m-5" viewBox="0 0 16 16">
+                        <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0m3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z"/>
+                    </svg>
+                </button>
+            </form>
         </div>
         {% endblock %}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
