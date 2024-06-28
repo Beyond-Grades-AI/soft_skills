@@ -220,6 +220,7 @@ textarea {
     text-align: right; /* Align text to the right */
 }
 
+
 </style>
 {% endblock %}
 
@@ -230,7 +231,7 @@ textarea {
 </div>
 <div class="title-container">
     <div class="form-container">
-        <form method="post">
+        <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
 
             <h3>?מה המקצוע שלך</h3>
@@ -254,7 +255,11 @@ textarea {
 
 
             <h4>תוכן הלימוד</h4>
-            <textarea name="input_text" rows="5" placeholder="כאן אפשר לכתוב או להדביק את החומר הלימודי"></textarea>
+            <textarea name="input_text" rows="5" placeholder="כאן אפשר לכתוב או להדביק את החומר הלימודי או להעלות קובץ למטה"></textarea>
+            <div>
+                <label for="file"><h4>:(pdf או docx)בחירת קובץ</h4></label>
+                <input type="file" id="file" name="file" accept=".pdf,.doc,.docx">
+            </div>
 
             <h4>?איזה מיומנויות התלמידים יתרגלו</h4>
             <div class="skill-selection">

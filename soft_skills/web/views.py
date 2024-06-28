@@ -1,4 +1,6 @@
 # web/views.py
+from xml.dom.minidom import Document
+
 from .models import Student  # Import the Question model
 from django.urls import reverse
 from .models import Question  # Import the Question model
@@ -8,6 +10,9 @@ from django.utils import timezone
 from language_model.LM import create_questions as create_questions_LM
 from django.shortcuts import render, redirect
 from .models import Test, Teacher
+from django.core.files.storage import FileSystemStorage
+import pdfplumber
+from docx import Document
 
 
 
@@ -45,28 +50,68 @@ def process_input(input_text: str, soft_skill: str, num_q) -> str:
     return questions
 
 # View for handling question creation
+def extract_text_from_docx(file_path):
+    doc = Document(file_path)
+    reversed_text = []
+    for para in doc.paragraphs:
+        reversed_words = []
+        for word in para.text.split():
+            reversed_word = word[::-1]  # Reverse word letter-by-letter
+            reversed_words.append(reversed_word)
+        reversed_paragraph = ' '.join(reversed_words)
+        reversed_text.append(reversed_paragraph)
+    return '\n\n'.join(reversed_text)
+
+def extract_text_from_pdf(file_path):
+    text = ""
+    try:
+        with pdfplumber.open(file_path) as pdf:
+            for page in pdf.pages:
+                text += page.extract_text() or ""
+    except Exception as e:
+        print(f"Error reading PDF file: {e}")
+    return text
+
 def create_questions(request):
     print('create_questions!!')
     print('request method: ')
     print(request.method)
-
     generated_questions = ""  # Initialize generated questions text
-
+    input_text = ""
     if request.method == 'POST':
-        # Get form inputs
-        input_text = request.POST.get('input_text', '')
         skill = request.POST.get('skill', '')
         subject = request.POST.get('subject', '')
         grade = request.POST.get('grade', '')
-        test_title = request.POST.get('title','')
-
-        print(f"skill: {skill} subject: {subject}, grade: {grade}, test_title: {test_title}")
+        test_title = request.POST.get('title', '')
+        try:
+            if request.FILES['file']:
+                uploaded_file = request.FILES['file']
+                fs = FileSystemStorage()
+                filename = fs.save(uploaded_file.name, uploaded_file)
+                print(f'file name is: {filename}')
+                file_path = fs.path(filename)
+                print(f'file path is: {file_path}')
+                if uploaded_file.name.endswith('.docx'):
+                    input_text = extract_text_from_docx(file_path)
+                elif uploaded_file.name.endswith('.pdf'):
+                    input_text = extract_text_from_pdf(file_path)
+                else:
+                    input_text = 'Unsupported file type'
+        except Exception as e:
+            print(f"Error reading PDF file: {e}")
+        # Get form inputs
+        if input_text == "":
+            input_text = request.POST.get('input_text', '')
+            print(f"skill: {skill} subject: {subject}, grade: {grade}, test_title: {test_title}")
 
         # Validate form inputs
         if not (skill and subject): #<--and sub_topic
             return HttpResponseServerError("Please fill in all required fields")
 
         # Process input text
+        print('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
+        print(f'input text : {input_text}')
+        print('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
         if input_text:
             generated_questions = process_input(input_text, skill, 5)
             print( f"num of questions: {len(generated_questions)}")
