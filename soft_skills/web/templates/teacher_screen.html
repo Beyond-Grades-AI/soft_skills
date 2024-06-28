@@ -7,76 +7,77 @@ Soft Skills
 
 {% block css %}
 <style>
-    body {
-            background-color: white;
-            margin: 0;
-            padding: 0;
-        }
-        .header {
-            background-color: #006349;
-            width: 100%;
-            padding: 70px 0;
-            box-sizing: border-box;
-        }
-       
-        input[type="text"],
-        button {
-            text-align: right;
-            margin-bottom: 20px; /* Increase the gap between input fields and buttons */
-        }
-        .title-container {
-            text-align: center;
-            margin-top: 30px; /* Adjusted margin to move it down */
-        }
-        .header h1 {
-            color: white;
-            text-align: right;
-            font-size: 26px; /* Adjust size as needed */
-            font-weight: normal; /* Use 'normal' if you don't want it bold */
-            font-family: Noto Sans Hebrew New; /* Change to your preferred font */
-            margin-right: 90px;
-            margin-bottom: -30px; /* Add margin-bottom to create space below h1 */
-        }
-        .form-container {
-            max-width: 900px;
-            margin: 20px auto 0 auto; /* Adjusted margin to move it down */
-            padding: 20px;
-            background-color: transparent;
-            /*border-radius: 0px;*/
-            /*box-shadow: 0 0 0px rgba(0, 0, 0, 0.1);*/
-        }
-        .form-container h3 {
-            color: black;
-            text-align: right;
-            font-size: 21px; /* Adjust size as needed */
-            font-weight: normal; /* Use 'normal' if you don't want it bold */
-            font-family: Noto Sans Hebrew New; /* Change to your preferred font */
-            margin-right: 0px;
-            margin-bottom: 20px; /* Add margin-bottom to create space below h1 */
-        }
-        .form-container h4 {
-            color: black;
-            text-align: right;
-            font-size: 21px; /* Adjust size as needed */
-            font-weight: normal; /* Use 'normal' if you don't want it bold */
-            font-family: Noto Sans Hebrew New; /* Change to your preferred font */
-            margin-right: 0px;
-            margin-bottom: 10px; /* Add margin-bottom to create space below h1 */
-            margin-top: 40px;
-        }
-        .form-container input[type="file"],
-        .form-container textarea,
-        .form-container select {
-            width: calc(100% - 20px);
-            margin: 10px 0;
-            padding: 15px;
-            border: 2px solid #eaeaea;
-            border-radius: 10px;
-            box-sizing: border-box;
-            font-size: 1.2rem;
-            transition: border-color 0.3s ease;
-        }
-        .form-container input[type="text"] {
+body {
+        background-color: white;
+        margin: 0;
+        padding: 0;
+    }
+    .header {
+        background-color: #006349;
+        width: 100%;
+        padding: 70px 0;
+        box-sizing: border-box;
+    }
+    /*.title-box {*/
+    /*    background-color: white;*/
+    /*    color: #009150;*/
+    /*    padding: 20px;*/
+    /*    border-radius: 0px;*/
+    /*    text-align: center;*/
+    /*    max-width: 600px;*/
+    /*    margin: -50px auto 0 auto; !* Adjusted margin to move it down *!*/
+    /*    box-shadow: 0 30px 70px rgba(0, 0, 0, 0.1); !* Added shadow *!*/
+    /*}*/
+    /* Additional CSS specific to this screen */
+    input[type="text"],
+    button {
+        text-align: right;
+        margin-bottom: 20px; /* Increase the gap between input fields and buttons */
+    }
+    .title-container {
+        text-align: center;
+        margin-top: 70vh;
+        transform: translateY(-50%);
+    }
+    .header h1 {
+        color: white;
+        text-align: right;
+        font-size: 26px; /* Adjust size as needed */
+        font-weight: normal; /* Use 'normal' if you don't want it bold */
+        font-family: Noto Sans Hebrew New; /* Change to your preferred font */
+        margin-right: 90px;
+        margin-bottom: -30px; /* Add margin-bottom to create space below h1 */
+    }
+    .form-container {
+        max-width: 900px;
+        margin: 20px auto 0 auto; /* Adjusted margin to move it down */
+        padding: 20px;
+        background-color: transparent;
+        /*border-radius: 0px;*/
+        /*box-shadow: 0 0 0px rgba(0, 0, 0, 0.1);*/
+    }
+    .form-container h3 {
+        color: black;
+        text-align: right;
+        font-size: 21px; /* Adjust size as needed */
+        font-weight: normal; /* Use 'normal' if you don't want it bold */
+        font-family: Noto Sans Hebrew New; /* Change to your preferred font */
+        margin-right: 0px;
+        margin-bottom: 20px; /* Add margin-bottom to create space below h1 */
+    }
+    .form-container h4 {
+        color: black;
+        text-align: right;
+        font-size: 21px; /* Adjust size as needed */
+        font-weight: normal; /* Use 'normal' if you don't want it bold */
+        font-family: Noto Sans Hebrew New; /* Change to your preferred font */
+        margin-right: 0px;
+        margin-bottom: 10px; /* Add margin-bottom to create space below h1 */
+        margin-top: 40px;
+    }
+    .form-container input[type="file"],
+    .form-container textarea,
+    .form-container select {
         width: calc(100% - 20px);
         margin: 10px 0;
         padding: 15px;
@@ -85,132 +86,141 @@ Soft Skills
         box-sizing: border-box;
         font-size: 1.2rem;
         transition: border-color 0.3s ease;
-        }
-    
-        .form-container input[type="file"]:focus,
-        .form-container textarea:focus,
-        .form-container select:focus {
-            border-color: #007bff;
-            outline: none;
-        }
-        .form-container button {
-            width: 20%;
-            padding: 8px;
-            background-color: #006349;
-            color: #fff;
-            text-align: center;
-            border: none;
-            border-radius: 30px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            font-size: 1.2rem;
-            margin-left: -900px;
-            margin-top: 20px; /* Add margin-top to create space between the textarea and button */
-        }
-        .form-container button:hover {
-            background-color: #004727;
-        }
-    
-    
-    
-        .link-to-survey {
-            display: inline-block;
-            font-size: 1.5rem;
-            margin-top: 20px;
-            text-decoration: none;
-            color: #007bff;
-            transition: color 0.3s ease;
-        }
-    
-        .link-to-survey:hover {
-            color: #0056b3;
-        }
-        .header-text {
-            position: absolute;
-            top: 25px;
-            left: 20px;
-            color: white;
-            font-size: 14px; /* Adjust size as needed */
-            font-family: Arial Rounded MT Bold; /* Change to your preferred font */
-        }
-    
-        .checkbox-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 5px; /* Add space between the checkboxes */
-            justify-content: right; /* Center the checkboxes */
-            font-size: 14px;
-            margin-bottom: 20px; /* Add space below the checkboxes */
-            margin-right: 80px; /* Add space below the checkboxes */
-            transform: scale(1.2);
-            -webkit-transform: scale(1.2); /* For Safari */
-        }
-    
-        .checkbox-group label {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 5px; /* Adjust gap between text and checkbox */
-        padding: 5px; /* Add padding for better visual effect */
-        border-radius: 5px; /* Optional: Add border radius for better aesthetics */
-        /*background-color: white; !* Smooth transition for background color *!*/
     }
-    
-        .checkbox-group input[type="checkbox"]:checked {
-            /*transform: scale(1.5);*/
-        accent-color: #ffbfeb; /* Set the background color when checked */
+    .form-container input[type="text"] {
+    width: calc(100% - 20px);
+    margin: 10px 0;
+    padding: 15px;
+    border: 2px solid #eaeaea;
+    border-radius: 10px;
+    box-sizing: border-box;
+    font-size: 1.2rem;
+    transition: border-color 0.3s ease;
     }
-    
-    
-        .skill-selection {
-        display: flex;
-        gap: 20px;
-        justify-content: center;
-        margin-top: 20px;
+
+    .form-container input[type="file"]:focus,
+    .form-container textarea:focus,
+    .form-container select:focus {
+        border-color: #007bff;
+        outline: none;
     }
-    
-    .cube {
-        width: 200px;
-        height: 150px;
-        background-color: white;
-        color: black;
-        /*border: 2px solid #006349;*/
-        box-shadow: 0 30px 70px rgba(0, 0, 0, 0.1);
+    .form-container button {
+        width: 20%;
+        padding: 8px;
+        background-color: #006349;
+        color: #fff;
         text-align: center;
-        padding: 10px;
-        border-radius: 10px;
+        border: none;
+        border-radius: 30px;
         cursor: pointer;
         transition: background-color 0.3s ease;
-    }
-    
-    .cube:hover {
-        background-color: #e0b8d4;
-    }
-    
-    .cube.selected {
-        background-color: #F3CCE7;
-    }
-    
-    .cube-title {
         font-size: 1.2rem;
-        font-weight: bold;
-        margin-bottom: 10px;
+        margin-left: -900px;
+        margin-top: 20px; /* Add margin-top to create space between the textarea and button */
     }
-    
-    .cube-description {
-        font-size: 1rem;
+    .form-container button:hover {
+        background-color: #004727;
     }
-    
-    input[type="hidden"] {
-        display: none;
+
+
+
+    .link-to-survey {
+        display: inline-block;
+        font-size: 1.5rem;
+        margin-top: 20px;
+        text-decoration: none;
+        color: #007bff;
+        transition: color 0.3s ease;
     }
-    textarea {
-        direction: rtl; /* Set text direction to right-to-left */
-        text-align: right; /* Align text to the right */
+
+    .link-to-survey:hover {
+        color: #0056b3;
     }
-    
-    </style>
-    
+    .header-text {
+        position: absolute;
+        top: 25px;
+        left: 20px;
+        color: white;
+        font-size: 14px; /* Adjust size as needed */
+        font-family: Arial Rounded MT Bold; /* Change to your preferred font */
+    }
+
+    .checkbox-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px; /* Add space between the checkboxes */
+        justify-content: right; /* Center the checkboxes */
+        font-size: 14px;
+        margin-bottom: 20px; /* Add space below the checkboxes */
+        margin-right: 80px; /* Add space below the checkboxes */
+        transform: scale(1.2);
+        -webkit-transform: scale(1.2); /* For Safari */
+    }
+
+    .checkbox-group label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 5px; /* Adjust gap between text and checkbox */
+    padding: 5px; /* Add padding for better visual effect */
+    border-radius: 5px; /* Optional: Add border radius for better aesthetics */
+    /*background-color: white; !* Smooth transition for background color *!*/
+}
+
+    .checkbox-group input[type="checkbox"]:checked {
+        /*transform: scale(1.5);*/
+    accent-color: #ffbfeb; /* Set the background color when checked */
+}
+
+
+    .skill-selection {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.cube {
+    width: 200px;
+    height: 150px;
+    background-color: white;
+    color: black;
+    /*border: 2px solid #006349;*/
+    box-shadow: 0 30px 70px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    padding: 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.cube:hover {
+    background-color: #e0b8d4;
+}
+
+.cube.selected {
+    background-color: #F3CCE7;
+}
+
+.cube-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.cube-description {
+    font-size: 1rem;
+}
+
+input[type="hidden"] {
+    display: none;
+}
+textarea {
+    direction: rtl; /* Set text direction to right-to-left */
+    text-align: right; /* Align text to the right */
+}
+
+</style>
 {% endblock %}
 
 {% block content %}
