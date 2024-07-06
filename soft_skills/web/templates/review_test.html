@@ -8,6 +8,10 @@
 </head>
 {% block css %}
 <style>
+    #logOut{
+            margin-left: auto;
+            text-decoration: none;
+    }
     body {
         background-color: white;
         margin: 0;
@@ -15,8 +19,6 @@
     }
     .header {
         background-color: #006349;
-        width: 100%;
-        padding: 70px 0;
         box-sizing: border-box;
     }
     .title-box {
@@ -74,10 +76,14 @@
 </style>
 {% endblock %}
 <body>
-    {% block content %}
-    <div class="header">
-    <div class="header-text">BEYOND GRADES</div>
-    </div>
+        {% block content %}
+        {% load static %}
+
+        <div class="d-flex header">
+            <a href="/main_screen"> <img src="{% static 'beyondGradesLogo.jpeg' %}" alt="Custom Image" width="200" height="100"> </a>
+            <a class="text-light fs-5 justify-content-end p-3 pt-4" id="logOut" href="/login_screen">Log out</a>
+        </div>
+
         <div class="title-box">
             <h1 id="title_for_student_name" style="font-size: 34px;">ההגשה של {{student_name}}</h1>
             <h4 class="text-secondary">

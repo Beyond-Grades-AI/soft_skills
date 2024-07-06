@@ -18,6 +18,4 @@ urlpatterns = [
     path('review_test/<int:test_id>/<str:student_id>', views.review_test, name='review_test'),
     path('test_feedback/', views.test_feedback, name='test_feedback'),
     path('failure_url/', views.failure_url, name='failure_url'),
-    # path('save_feedback', views.save_feedback, name='save_feedback')
-
 ]

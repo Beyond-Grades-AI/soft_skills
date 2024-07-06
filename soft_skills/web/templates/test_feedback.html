@@ -14,8 +14,6 @@
     }
     .header {
         background-color: #006349;
-        width: 100%;
-        padding: 70px 0;
         box-sizing: border-box;
     }
     .title-box {
@@ -64,16 +62,22 @@
         font-family: Arial Rounded MT Bold; /* Change to your preferred font */
         {#font-weight: bold; /* Use 'normal' if you don't want it bold */#}
     }
+    #logOut{
+        margin-left: auto;
+        text-decoration: none;
+    }
 </style>
 <body>
     {% block content %}
-    <div class="header">
-    <div class="header-text">BEYOND GRADES</div>
+    {% load static %}
+    <div class="d-flex header">
+        <a href="/main_screen"> <img src="{% static 'beyondGradesLogo.jpeg' %}" alt="Custom Image" width="200" height="100"> </a>
+        <a class="text-light fs-5 justify-content-end p-3 pt-4" id="logOut" href="/login_screen">Log out</a>
     </div>
-        <div class="title-box">
-            <h1 style="font-size: 34px;">שאלון בנושא {{test.title}}</h1>
-            <h3> {{test.skill}} - כיתה {{test.grade}}</h3>
-        </div>
+    <div class="title-box">
+        <h1 style="font-size: 34px;">שאלון בנושא {{test.title}}</h1>
+        <h3> {{test.skill}} - כיתה {{test.grade}}</h3>
+    </div>
     <div class="title-container">
         <div class="tests-container">
     {#        <h2>בחר מבחן לבדיקה:</h2>#}

@@ -328,11 +328,16 @@ def tests_screen(request):
 
     # POST request handling (teacher choosed a test to display his submissions)
     else:
-        print('POST request')
-        test_id = request.POST.get('test_id')
-        test = Test.objects.get(id=test_id)
-        student_submitted = test.students.all()
-        return render(request, 'tests_screen.html', {'test_id': test_id, 'students': student_submitted, 'test': test, 'tests': teacher_tests})
+        print('*******************POST request*******************')
+        searched_title = request.POST.get('testNameSearched')
+        print('******************* SEARCHED TITLE *******************')
+        print('ENTERED: ', searched_title)
+        searched_tests = []
+        for test in teacher_tests:
+            if searched_title in test.title:
+                searched_tests.append(test)
+        return render(request, 'tests_screen.html', {'tests': searched_tests})
+
 
 def test_feedback(request):
     print('START OF TEST FEEDBACK IN VIEWS')
