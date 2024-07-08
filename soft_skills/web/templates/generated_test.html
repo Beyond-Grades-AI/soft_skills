@@ -217,14 +217,39 @@ Generated Questions
         <button type="submit" style="background-color: #009150; color: white; padding: 10px 20px; border: none;">יצירת קישור לשאלון</button>
     </form>
 </div>
-{% endblock %}
 
 {% block scripts %}
 <script>
+
+    document.addEventListener('DOMContentLoaded', function() {
+            document.body.addEventListener('click', function(event) {
+                closeMenus(event);
+            });
+        });
+
+        function closeMenus(event) {
+        const menus = document.querySelectorAll('.menu');
+        menus.forEach(menu => {
+            if (menu.style.display === 'block' && !menu.contains(event.target)) {
+                menu.style.display = 'none';
+            }
+        });
+    }
+
     function toggleMenu(event) {
         event.stopPropagation();
         const menu = event.currentTarget.nextElementSibling;
+        closeOtherMenus(menu);
         menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function closeOtherMenus(currentMenu) {
+        const menus = document.querySelectorAll('.menu');
+        menus.forEach(menu => {
+            if (menu !== currentMenu && menu.style.display === 'block') {
+                menu.style.display = 'none';
+            }
+        });
     }
 
     function showEditForm(counter, question) {
@@ -257,70 +282,129 @@ Generated Questions
     function deleteQuestion(counter) {
         const questionBox = document.getElementById(`triangle-box-${counter}`);
         questionBox.remove();
+        updateAllQuestionNumbers();
     }
 
     function moveQuestionUp(counter) {
-        const currentQuestion = document.getElementById(`triangle-box-${counter}`);
-        const previousQuestion = currentQuestion.previousElementSibling;
-        if (previousQuestion) {
-            currentQuestion.parentNode.insertBefore(currentQuestion, previousQuestion);
-        }
+    const currentQuestion = document.getElementById(`triangle-box-${counter}`);
+    const previousQuestion = currentQuestion.previousElementSibling;
+    if (previousQuestion) {
+        currentQuestion.parentNode.insertBefore(currentQuestion, previousQuestion);
+        updateAllQuestionNumbers();
+        updateHiddenFields();
     }
+}
 
-    function moveQuestionDown(counter) {
-        const currentQuestion = document.getElementById(`triangle-box-${counter}`);
-        const nextQuestion = currentQuestion.nextElementSibling;
-        if (nextQuestion) {
-            currentQuestion.parentNode.insertBefore(nextQuestion, currentQuestion);
-        }
+function moveQuestionDown(counter) {
+    const currentQuestion = document.getElementById(`triangle-box-${counter}`);
+    const nextQuestion = currentQuestion.nextElementSibling;
+    if (nextQuestion) {
+        currentQuestion.parentNode.insertBefore(nextQuestion, currentQuestion);
+        updateAllQuestionNumbers();
+        updateHiddenFields();
+
     }
+}
 
-    function addQuestion() {
-        const questionsList = document.getElementById('questions-list');
-        const newCounter = questionsList.children.length + 1;
-        const newQuestion = document.createElement('div');
-        newQuestion.className = 'triangle-box';
-        newQuestion.id = `triangle-box-${newCounter}`;
-        newQuestion.innerHTML = `
-            <div class="question-text" id="question-text-${newCounter}">
-                <span class="question-number">${newCounter}</span> 
-                <input type="text" id="new-question-${newCounter}" placeholder="הכנס שאלה כאן"/>
+function updateQuestionNumbers(questionBox) {
+    const questionNumberElement = questionBox.querySelector('.question-number');
+    const newIndex = Array.from(questionBox.parentNode.children).indexOf(questionBox) + 1;
+    questionNumberElement.textContent = newIndex;
+}
+
+function updateAllQuestionNumbers() {
+    const questions = document.querySelectorAll('.triangle-box');
+    questions.forEach((question, index) => {
+        const questionNumberElement = question.querySelector('.question-number');
+        questionNumberElement.textContent = index + 1; // Update the question number
+    });
+}
+
+function updateHiddenFields() {
+    const questions = document.querySelectorAll('.triangle-box');
+    questions.forEach((question, index) => {
+        const questionNumber = index + 1;
+        const questionId = question.getAttribute('id').split('-')[2];
+
+        // Update the question ID attribute
+        question.id = `triangle-box-${questionNumber}`;
+
+        // Update the hidden input field
+        const hiddenInput = document.getElementById(`hidden-question-${questionId}`);
+        if (hiddenInput) {
+            hiddenInput.id = `hidden-question-${questionNumber}`;
+        }
+    });
+}
+
+function addQuestion() {
+    const questionsList = document.getElementById('questions-list');
+    const newCounter = questionsList.children.length + 1;
+
+    const newQuestion = document.createElement('div');
+    newQuestion.classList.add('triangle-box');
+    newQuestion.id = `triangle-box-${newCounter}`;
+    newQuestion.innerHTML = `
+        <div class="question-text" id="question-text-${newCounter}">
+            <span class="question-number">${newCounter}</span> 
+            <input type="text" placeholder="הכנס שאלה כאן" id="new-question-input-${newCounter}">
+            <button class="menu-button" type="button" onclick="toggleMenu(event)">...</button>
+            <div class="menu" style="display: none;">
+                <button type="button" onclick="showEditForm('${newCounter}', '')">ערוך</button>
+                <button type="button" onclick="deleteQuestion('${newCounter}')">מחק</button>
+                <button type="button" onclick="moveQuestionUp('${newCounter}')">העברה למעלה</button>
+                <button type="button" onclick="moveQuestionDown('${newCounter}')">העברה למטה</button>
+            </div>
+        </div>
+        <div class="edit-form" id="edit-form-${newCounter}" style="display: none;">
+            <input type="text" id="edit-input-${newCounter}" placeholder="עריכת שאלה" />
+            <button type="button" onclick="saveQuestion('${newCounter}')">שמור</button>
+            <button type="button" onclick="cancelEdit('${newCounter}')">בטל</button>
+        </div>
+        <button type="button" onclick="saveNewQuestion('${newCounter}')">שמור שאלה</button>
+    `;
+    
+    questionsList.appendChild(newQuestion);
+}
+
+function saveNewQuestion(counter) {
+    const newQuestionInput = document.getElementById(`new-question-input-${counter}`);
+    const questionText = newQuestionInput.value.trim();
+    
+    if (questionText !== '') {
+        const questionTextElement = document.createElement('div');
+        questionTextElement.classList.add('triangle-box');
+        questionTextElement.id = `triangle-box-${counter}`;
+        questionTextElement.innerHTML = `
+            <div class="question-text" id="question-text-${counter}">
+                <span class="question-number">${counter}</span> ${questionText}
                 <button class="menu-button" type="button" onclick="toggleMenu(event)">...</button>
                 <div class="menu" style="display: none;">
-                    <button type="button" onclick="showEditForm('${newCounter}', '')">ערוך</button>
-                    <button type="button" onclick="deleteQuestion('${newCounter}')">מחק</button>
-                    <button type="button" onclick="moveQuestionUp('${newCounter}')">העברה למעלה</button>
-                    <button type="button" onclick="moveQuestionDown('${newCounter}')">העברה למטה</button>
+                    <button type="button" onclick="showEditForm('${counter}', '${questionText}')">ערוך</button>
+                    <button type="button" onclick="deleteQuestion('${counter}')">מחק</button>
+                    <button type="button" onclick="moveQuestionUp('${counter}')">העברה למעלה</button>
+                    <button type="button" onclick="moveQuestionDown('${counter}')">העברה למטה</button>
                 </div>
             </div>
-            <div class="edit-form" id="edit-form-${newCounter}">
-                <input type="text" id="edit-input-${newCounter}" value="" />
-                <button type="button" onclick="saveQuestion('${newCounter}')">שמור</button>
-                <button type="button" onclick="cancelEdit('${newCounter}')">בטל</button>
+            <div class="edit-form" id="edit-form-${counter}" style="display: none;">
+                <input type="text" id="edit-input-${counter}" value="${questionText}" />
+                <button type="button" onclick="saveQuestion('${counter}')">שמור</button>
+                <button type="button" onclick="cancelEdit('${counter}')">בטל</button>
             </div>
-            <input type="hidden" name="questions[]" id="hidden-question-${newCounter}" value="">
+            <input type="hidden" name="questions[]" id="hidden-question-${counter}" value="${questionText}">
         `;
-        questionsList.appendChild(newQuestion);
+        
+        const questionsList = document.getElementById('questions-list');
+        questionsList.replaceChild(questionTextElement, document.getElementById(`triangle-box-${counter}`));
+
+        // Update hidden input with the new question
+        const hiddenInput = document.getElementById(`hidden-question-${counter}`);
+        hiddenInput.value = questionText;
+
+    } else {
+        alert('Please enter a question.');
     }
-
-    document.addEventListener('click', function(event) {
-        const menus = document.querySelectorAll('.menu');
-        menus.forEach(menu => {
-            if (!menu.contains(event.target)) {
-                menu.style.display = 'none';
-            }
-        });
-    });
-
-    document.getElementById('questions-form').addEventListener('submit', function(event) {
-        const questionInputs = document.querySelectorAll('input[name="questions[]"]');
-        questionInputs.forEach(input => {
-            if (input.value.trim() === '') {
-                event.preventDefault();
-                alert('Please fill in all the questions before submitting.');
-                return false;
-            }
-        });
-    });
+}
 </script>
+{% endblock %}
 {% endblock %}
