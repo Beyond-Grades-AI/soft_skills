@@ -8,7 +8,11 @@ if defined _OLD_CODEPAGE (
     "%SystemRoot%\System32\chcp.com" 65001 > nul
 )
 
+<<<<<<< Updated upstream
 set VIRTUAL_ENV=C:\Users\adel\beyondGradesBackup\soft_skills\venv
+=======
+set VIRTUAL_ENV=C:\Users\LAYAN\OneDrive - post.bgu.ac.il\שולחן העבודה\פרויקט גמר\soft_skills\venv
+>>>>>>> Stashed changes
 
 if not defined PROMPT set PROMPT=$P$G
 

@@ -1,4 +1,8 @@
+<<<<<<< Updated upstream
 #!C:\Users\adel\beyondGradesBackup\soft_skills\venv\Scripts\python.exe
+=======
+#!C:\Users\LAYAN\OneDrive - post.bgu.ac.il\שולחן העבודה\פרויקט גמר\soft_skills\venv\Scripts\python.exe
+>>>>>>> Stashed changes
 """A command line tool for extracting text and images from PDF and
 output it to plain text, html, xml or tags."""
 import argparse

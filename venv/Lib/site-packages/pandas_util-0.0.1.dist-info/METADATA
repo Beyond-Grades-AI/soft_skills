@@ -1,0 +1,21 @@
+Metadata-Version: 2.1
+Name: pandas-util
+Version: 0.0.1
+Summary: Some utils for working with pandas.
+Home-page: https://pypi.org/project/pandas-util/
+Author: Filantus
+Author-email: filantus@mail.ru
+License: GPL
+Platform: UNKNOWN
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: GNU General Public License (GPL)
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Operating System :: OS Independent
+Description-Content-Type: text/markdown
+Requires-Dist: pandas
+Requires-Dist: openpyxl
+Requires-Dist: excel-util
+
+Some utils for working with pandas.
+
+

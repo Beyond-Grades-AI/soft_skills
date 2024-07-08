@@ -1,4 +1,8 @@
+<<<<<<< Updated upstream
 #!C:\Users\adel\beyondGradesBackup\soft_skills\venv\Scripts\python.exe
+=======
+#!C:\Users\LAYAN\OneDrive - post.bgu.ac.il\שולחן העבודה\פרויקט גמר\soft_skills\venv\Scripts\python.exe
+>>>>>>> Stashed changes
 """Extract pdf structure in XML format"""
 import logging
 import os.path

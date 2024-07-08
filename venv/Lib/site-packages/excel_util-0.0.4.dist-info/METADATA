@@ -1,0 +1,19 @@
+Metadata-Version: 2.1
+Name: excel-util
+Version: 0.0.4
+Summary: Some utils for working with excel sheets.
+Home-page: https://pypi.org/project/excel-util/
+Author: Filantus
+Author-email: filantus@mail.ru
+License: GPL
+Platform: UNKNOWN
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: GNU General Public License (GPL)
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Operating System :: OS Independent
+Description-Content-Type: text/markdown
+Requires-Dist: openpyxl
+
+Some utils for working with excel sheets.
+
+
