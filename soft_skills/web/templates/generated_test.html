@@ -172,6 +172,10 @@ Generated Questions
     #questions-container {
         padding-bottom: 80px;
     }
+
+    .input-large {
+        width: 2%;
+}
 </style>
 {% endblock %}
 
@@ -255,6 +259,7 @@ Generated Questions
     function showEditForm(counter, question) {
         document.getElementById(`question-text-${counter}`).style.display = 'none';
         document.getElementById(`edit-form-${counter}`).style.display = 'block';
+        document.getElementById(`edit-form-${counter}`).classList.add('large-width');
         document.getElementById(`edit-input-${counter}`).value = question;
     }
 
@@ -347,7 +352,7 @@ function addQuestion() {
     newQuestion.innerHTML = `
         <div class="question-text" id="question-text-${newCounter}">
             <span class="question-number">${newCounter}</span> 
-            <input type="text" placeholder="הכנס שאלה כאן" id="new-question-input-${newCounter}">
+            <input type="text" placeholder="הכנס שאלה כאן" id="new-question-input-${newCounter} class ="input-large">
             <button class="menu-button" type="button" onclick="toggleMenu(event)">...</button>
             <div class="menu" style="display: none;">
                 <button type="button" onclick="showEditForm('${newCounter}', '')">ערוך</button>
@@ -357,7 +362,7 @@ function addQuestion() {
             </div>
         </div>
         <div class="edit-form" id="edit-form-${newCounter}" style="display: none;">
-            <input type="text" id="edit-input-${newCounter}" placeholder="עריכת שאלה" />
+            <input type="text" id="edit-input-${newCounter}" placeholder="עריכת שאלה" class ="input-large" />
             <button type="button" onclick="saveQuestion('${newCounter}')">שמור</button>
             <button type="button" onclick="cancelEdit('${newCounter}')">בטל</button>
         </div>
