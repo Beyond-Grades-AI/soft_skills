@@ -46,7 +46,7 @@ def main_screen(request):
 # Function to process input text and generate questions using the language model
 def process_input(input_text: str, soft_skill: str, num_q) -> str:
     # Call the create_questions_LM function to generate questions
-    questions = create_questions_LM(input_text, soft_skill,False, 5)
+    questions = create_questions_LM(input_text, soft_skill,True, 5)
     return questions
 
 # View for handling question creation
