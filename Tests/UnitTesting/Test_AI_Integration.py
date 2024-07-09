@@ -2,7 +2,7 @@ import os
 import unittest
 from unittest import TestCase
 from unittest.mock import patch
-from cryptography.fernet import Fernet
+#from cryptography.fernet import Fernet
 from soft_skills.language_model.LM import decrypt, remove_numbering, activate_lm
 from unittest.mock import patch
 from soft_skills.language_model.LM import create_questions, read_text_file, activate_lm, remove_numbering
