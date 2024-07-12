@@ -12,6 +12,7 @@ class Test(models.Model):
     teacher = models.ForeignKey('Teacher', related_name='tests', on_delete=models.CASCADE)  # Field to store the teacher
     link = models.URLField(max_length=200, blank=True, null=True)  # Field to store the URL link for the test
     grade = models.CharField(max_length=100)
+    #generalNote = models.CharField(max_length=400)
     #date = models.DateField()
     # class Meta:
     #      unique_together = ('title', 'teacher')  # Ensure unique combination of title and teacher
