@@ -1,11 +1,12 @@
 # web/views.py
+from io import BytesIO
 from xml.dom.minidom import Document
 
 from .models import Student  # Import the Question model
 from django.urls import reverse
 from .models import Question  # Import the Question model
 from .models import Answer
-from django.http import HttpResponseServerError
+from django.http import HttpResponseServerError, HttpResponseRedirect, HttpResponse
 from django.utils import timezone
 from language_model.LM import create_questions as create_questions_LM
 from django.shortcuts import render, redirect
@@ -13,6 +14,12 @@ from .models import Test, Teacher
 from django.core.files.storage import FileSystemStorage
 import pdfplumber
 from docx import Document
+from reportlab.lib.pagesizes import A4
+from reportlab.pdfgen import canvas
+from reportlab.lib import fonts
+from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.pdfbase import pdfmetrics
+import os
 
 
 
@@ -345,10 +352,19 @@ def test_feedback(request):
         test_id = request.POST.get('test_id')
         print("Test ID:", test_id)  # Debug print statement
         test = Test.objects.get(id=test_id)
-        student_submitted = test.students.all()
+        students_submitted = test.students.all()
         students_submitted_count = test.students.count()
+        questions = test.questions.all()
+        first_question = questions[0]       #WE NEED ANY QUESTION TO CHECK IF EXAM IS REVIEWED - WE WILL GET FIRST QUESTION
+        students_with_approved_eval = []
+        for student in students_submitted:
+            student_id = student.student_id
+            answer = first_question.answers.all().filter(student_identifier=student_id).first()
+            if answer.is_approved:
+                students_with_approved_eval.append(student_id)
+
         print('Count: ', students_submitted_count)
-        return render(request, 'test_feedback.html', {'students' : student_submitted, 'count' : students_submitted_count, 'test' : test})
+        return render(request, 'test_feedback.html', {'students' : students_submitted, 'count' : students_submitted_count, 'test' : test, 'students_with_approved_eval' : students_with_approved_eval})
     print('THE END OF TEST FEEDBACK IN VIEWS')
 
 # View for reviewing a test and handling evaluations
@@ -415,9 +431,140 @@ def review_test(request, test_id, student_id ):
             return redirect('login_screen')
         ######################################################################
         test = Test.objects.get(id=test_id)
-        student_submitted = test.students.all()
+        students_submitted = test.students.all()
+        questions = test.questions.all()
+        first_question = questions[0]  # WE NEED ANY QUESTION TO CHECK IF EXAM IS REVIEWED - WE WILL GET FIRST QUESTION
+        students_with_approved_eval = []
+        for student in students_submitted:
+            student_id = student.student_id
+            answer = first_question.answers.all().filter(student_identifier=student_id).first()
+            if answer.is_approved:
+                students_with_approved_eval.append(student_id)
         students_submitted_count = test.students.count()
-        return render(request, 'test_feedback.html', {'students' : student_submitted, 'count' : students_submitted_count, 'test' : test})
+        return render(request, 'test_feedback.html', {'students' : students_submitted, 'count' : students_submitted_count, 'test' : test, 'students_with_approved_eval' : students_with_approved_eval})
+
+
+def reverse_hebrew_text(text):
+    """Reverse Hebrew text to render correctly in PDF."""
+    return text[::-1]
+
+
+def draw_hebrew_text(p, text, x, y, max_width, font_size=12, line_height=20):
+    """Draw Hebrew text with manual wrapping and right-to-left alignment."""
+    p.setFont("Hebrew", font_size)
+
+    lines = []
+    current_line = ""
+
+    # Split text into words and handle line wrapping
+    for word in text.split():
+        # Check if adding the word exceeds max_width
+        if p.stringWidth(reverse_hebrew_text(current_line + word), "Hebrew", font_size) <= max_width:
+            current_line += word + " "
+        else:
+            lines.append(current_line.strip())
+            current_line = word + " "
+
+    # Append the last line
+    if current_line.strip():
+        lines.append(current_line.strip())
+
+    # Draw each line of text right-to-left
+    for line in lines:
+        # Calculate the starting x position for right-to-left text
+        text_width = p.stringWidth(reverse_hebrew_text(line), "Hebrew", font_size)
+        x_start = x + max_width - text_width
+
+        # Check if y position is within page boundaries
+        if y < 50:  # Adjust as necessary to leave margin at the bottom
+            p.showPage()  # Start a new page if space is insufficient
+            p.setFont("Hebrew", font_size)  # Reset font after new page
+            y = A4[1] - 50  # Adjust starting Y position for new page
+
+        p.drawString(x_start, y, reverse_hebrew_text(line))
+        y -= line_height  # Adjust Y position for the next line
+
+    return y
+
+def download_test(request, test_id, student_id):
+    font_path2 = os.path.join(os.path.dirname(__file__), 'fonts', 'bold.ttf')
+    pdfmetrics.registerFont(TTFont('Bold', font_path2))
+
+    font_path1 = os.path.join(os.path.dirname(__file__), 'fonts', 'mriam.ttf')
+    pdfmetrics.registerFont(TTFont('Hebrew', font_path1))
+
+    student = Student.objects.get(student_id=student_id)
+    test = Test.objects.get(id=test_id)
+    test_questions = test.questions.all()
+    tmp = '----------------------------------------------------------------------------------------------------------------'
+
+    # Create a file-like buffer to receive PDF data
+    buffer = BytesIO()
+
+    # Create the PDF object, using the buffer as its "file."
+    p = canvas.Canvas(buffer, pagesize=A4)
+
+    y = 800  # Starting Y position
+
+    # Use Hebrew font
+    p.setFont("Bold", 16)
+
+    title = 'מבחן בנושא: ' + test.title
+    draw_hebrew_text(p, title, 50, y, 450)
+
+    grade = 'כיתה ' + test.grade
+    draw_hebrew_text(p, grade, -250, y, 450)
+
+    skill = 'מיומנות: ' + test.skill
+    draw_hebrew_text(p, skill, -300, y, 450)
+    y -= 30
+
+    student_name = 'שם התלמיד: ' + student.first_name + ' ' + student.last_name
+    draw_hebrew_text(p, student_name, 50, y, 450)
+    y -= 60
+
+    # Reset font size for content
+    index = 1
+
+    for question in test_questions:
+        questionFormat = 'שאלה ' + str(index) + ': '
+        answer = question.answers.all().filter(student_identifier=student_id).first()
+        anwer_eval = answer.approved_eval
+
+        y = draw_hebrew_text(p, questionFormat, 50, y, 450)
+        y -= 10
+
+        p.setFont("Hebrew", 12)
+        y = draw_hebrew_text(p, question.text, 50, y, 450)
+        y -= 10
+
+        p.setFont("Bold", 16)
+        answerFormat = 'תשובת התלמיד: '
+        y = draw_hebrew_text(p, answerFormat, 50, y, 450)
+        y -= 10
+
+        p.setFont("Hebrew", 12)
+        y = draw_hebrew_text(p, answer.answer_text, 50, y, 450)
+        y -= 10
+
+        p.setFont("Bold", 16)
+        reviewFormat = 'משוב על התשובה : '
+        y = draw_hebrew_text(p, reviewFormat, 50, y, 450)
+        y -= 10
+
+        p.setFont("Hebrew", 12)
+        y = draw_hebrew_text(p, anwer_eval, 50, y, 450)
+        y -= 10
+
+        y = draw_hebrew_text(p, tmp, 50, y, 450)
+        y -= 40
+
+        index = index + 1
+
+    p.showPage()
+    p.save()
+    buffer.seek(0)
+    return HttpResponse(buffer, content_type='application/pdf')
 
 def failure_url(request):
     return render(request, 'failure_url.html')

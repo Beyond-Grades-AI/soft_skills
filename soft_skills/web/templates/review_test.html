@@ -73,6 +73,10 @@
         direction: rtl;
         text-align: right;
     }
+    .questions{
+        width: 1300px;
+        height: 150px;
+    }
 </style>
 {% endblock %}
 <body>
@@ -103,18 +107,24 @@
             <div class="accordion p-5" id="accordionPanelsStayOpenExample">
             {% for question, answer in question_answers_dict.items %}
                 <div class="mb-3 text-end">
-                    <span class="hebrew fs-5"><strong>{{question.text}}</strong></span>
-                  <div class="hebrew p-3 mt-3 bg-secondary-subtle border border-secondary-subtle"><span>{{answer.answer_text}}</span></div>
-                </div>
-                <div class="mb-3 text-end">
-                  <label for="exampleFormControlTextarea{{ forloop.counter }}" class="form-label text-success fw-bold">משוב על התשובה</label>
-                  <textarea class="form-control border border-success text-end" id="exampleFormControlTextarea{{ forloop.counter }}" name="exampleFormControlTextarea{{ forloop.counter }}" rows="3">
-                      {% if answer.is_approved %}
-                        {{answer.approved_eval}}
-                      {% else %}
-                        {{answer.origin_eval}}
-                      {% endif %}
-                  </textarea>
+                    <a class="btn text-bg-light border border-dark questions text-end" data-bs-toggle="collapse" href="#collapse{{ forloop.counter }}" role="button" aria-expanded="false" aria-controls="collapseExample">
+                        <p class="fw-bold fs-4">:שאלה {{forloop.counter}}</p>
+                        <p class="fs-5">{{question.text}}</p>
+                    </a>
+                    <div class="collapse" id="collapse{{ forloop.counter }}">
+                        <label for="exampleFormControlTextarea{{ forloop.counter }}" class="form-label text-success fw-bold">:תשובת התלמיד</label>
+                        <div class="hebrew p-2 m-2 bg-secondary-subtle border border-secondary-subtle"><span>{{answer.answer_text}}</span></div>
+                        <div class="mb-3 text-end">
+                          <label for="exampleFormControlTextarea{{ forloop.counter }}" class="form-label text-success fw-bold">:משוב על התשובה</label>
+                          <textarea class="form-control border border-success text-end" id="exampleFormControlTextarea{{ forloop.counter }}" name="exampleFormControlTextarea{{ forloop.counter }}" rows="7">
+                              {% if answer.is_approved %}
+                                {{answer.approved_eval}}
+                              {% else %}
+                                {{answer.origin_eval}}
+                              {% endif %}
+                          </textarea>
+                        </div>
+                    </div>
                 </div>
             {% endfor %}
             </div>
@@ -122,11 +132,7 @@
                 <label for="exampleFormControlTextarea" class="hebrew fs-5 mt-5 form-label text-success fw-bold">פידבק על ההגשה של {{student_name}}</label>
                 <textarea class="text-end form-control border border-success" id="exampleFormControlTextarea"  placeholder="הוספת פידבק כללי לתלמיד" rows="3">{{answer.origin_eval}}</textarea>
                 <div class="d-grid gap-2">
-                    {% if clickable %}
-                        <button type="submit" class="m-3 btn btn-outline-success fw-bold">שמירה</button>
-                    {% else %}
-                        <button type="submit" disabled class="m-3 btn btn-outline-success fw-bold">שמירה</button>
-                    {% endif %}
+                     <button type="submit" class="m-3 btn btn-outline-success fw-bold">שמירה</button>
                 </div>
             </div>
         </form>
