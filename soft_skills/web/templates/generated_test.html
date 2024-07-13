@@ -317,13 +317,39 @@ function updateQuestionNumbers(questionBox) {
     questionNumberElement.textContent = newIndex;
 }
 
+// function updateAllQuestionNumbers() {
+//     const questions = document.querySelectorAll('.triangle-box');
+//     questions.forEach((question, index) => {
+//         const questionNumberElement = question.querySelector('.question-number');
+//         questionNumberElement.textContent = index + 1; // Update the question number
+//     });
+// }
+
 function updateAllQuestionNumbers() {
-    const questions = document.querySelectorAll('.triangle-box');
-    questions.forEach((question, index) => {
-        const questionNumberElement = question.querySelector('.question-number');
-        questionNumberElement.textContent = index + 1; // Update the question number
-    });
-}
+        const questions = document.querySelectorAll('.triangle-box');
+        questions.forEach((question, index) => {
+            const questionNumber = index + 1;
+            const questionTextContainer = question.querySelector('.question-text');
+            const questionTextElement = questionTextContainer.querySelector('.question-number');
+            questionTextElement.textContent = questionNumber;
+
+            // Update all IDs and references
+            question.id = `triangle-box-${questionNumber}`;
+            questionTextContainer.id = `question-text-${questionNumber}`;
+            const menuButton = questionTextContainer.querySelector('.menu-button');
+            const menu = questionTextContainer.querySelector('.menu');
+            menuButton.setAttribute('onclick', `toggleMenu(event)`);
+            menu.querySelector('button[onclick^="showEditForm"]').setAttribute('onclick', `showEditForm('${questionNumber}', '${questionTextElement.nextSibling.textContent.trim()}')`);
+            menu.querySelector('button[onclick^="deleteQuestion"]').setAttribute('onclick', `deleteQuestion('${questionNumber}')`);
+            menu.querySelector('button[onclick^="moveQuestionUp"]').setAttribute('onclick', `moveQuestionUp('${questionNumber}')`);
+            menu.querySelector('button[onclick^="moveQuestionDown"]').setAttribute('onclick', `moveQuestionDown('${questionNumber}')`);
+            question.querySelector('.edit-form').id = `edit-form-${questionNumber}`;
+            question.querySelector('.edit-form input').id = `edit-input-${questionNumber}`;
+            question.querySelector('.edit-form button[onclick^="saveQuestion"]').setAttribute('onclick', `saveQuestion('${questionNumber}')`);
+            question.querySelector('.edit-form button[onclick^="cancelEdit"]').setAttribute('onclick', `cancelEdit('${questionNumber}')`);
+            question.querySelector('input[type="hidden"]').id = `hidden-question-${questionNumber}`;
+        });
+    }
 
 function updateHiddenFields() {
     const questions = document.querySelectorAll('.triangle-box');
