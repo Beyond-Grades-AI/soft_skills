@@ -12,11 +12,6 @@
             margin-left: auto;
             text-decoration: none;
     }
-    body {
-        background-color: white;
-        margin: 0;
-        padding: 0;
-    }
     .header {
         background-color: #006349;
     }
@@ -96,8 +91,8 @@
             <div class="col-md-6 offset-md-3">
                 <form class="form-inline d-flex p-2" method="POST" action="{% url 'tests_screen' %}">
                     {% csrf_token %}
-                    <button class="btn btn-success my-2 my-sm-0" type="submit">חפש</button>
-                    <input name="testNameSearched" id="testNameSearched" class="form-control mr-sm-2 m-2 text-end" type="search" placeholder=". . . חפש לפי שם מבחן" aria-label="Search">
+                    <button class="btn btn-success my-2 my-sm-0" type="submit">חפש/י</button>
+                    <input name="testNameSearched" id="testNameSearched" class="form-control mr-sm-2 m-2 text-end" type="search" placeholder=". . . חפש/י לפי שם מבחן" aria-label="Search">
                 </form>
             </div>
         </div>
