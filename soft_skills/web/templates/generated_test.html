@@ -48,6 +48,12 @@ Generated Questions
         border-radius: 10px;
         box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
         position: relative;
+        transition: all 0.3s ease-in-out;
+
+    }
+
+    .triangle-box.large {
+        height: 300px; /* Adjust as needed */
     }
 
     .triangle-box .question-text {
@@ -77,6 +83,11 @@ Generated Questions
 
     .question-text-container {
         flex-grow: 1;
+    }
+
+    .question-text input.input-large {
+        width: 100%;
+        height: 80%; /* Adjust as needed */
     }
 
     .triangle-box .menu-button {
@@ -151,6 +162,10 @@ Generated Questions
         white-space: normal;
     }
 
+    .edit-form {
+        display: none;
+    }
+    
     .add-question-btn {
         position: fixed;
         bottom: 20px;
@@ -284,6 +299,7 @@ Generated Questions
         document.getElementById(`edit-form-${counter}`).style.display = 'none';
     }
 
+
     function deleteQuestion(counter) {
         const questionBox = document.getElementById(`triangle-box-${counter}`);
         questionBox.remove();
@@ -317,13 +333,39 @@ function updateQuestionNumbers(questionBox) {
     questionNumberElement.textContent = newIndex;
 }
 
+// function updateAllQuestionNumbers() {
+//     const questions = document.querySelectorAll('.triangle-box');
+//     questions.forEach((question, index) => {
+//         const questionNumberElement = question.querySelector('.question-number');
+//         questionNumberElement.textContent = index + 1; // Update the question number
+//     });
+// }
+
 function updateAllQuestionNumbers() {
-    const questions = document.querySelectorAll('.triangle-box');
-    questions.forEach((question, index) => {
-        const questionNumberElement = question.querySelector('.question-number');
-        questionNumberElement.textContent = index + 1; // Update the question number
-    });
-}
+        const questions = document.querySelectorAll('.triangle-box');
+        questions.forEach((question, index) => {
+            const questionNumber = index + 1;
+            const questionTextContainer = question.querySelector('.question-text');
+            const questionTextElement = questionTextContainer.querySelector('.question-number');
+            questionTextElement.textContent = questionNumber;
+
+            // Update all IDs and references
+            question.id = `triangle-box-${questionNumber}`;
+            questionTextContainer.id = `question-text-${questionNumber}`;
+            const menuButton = questionTextContainer.querySelector('.menu-button');
+            const menu = questionTextContainer.querySelector('.menu');
+            menuButton.setAttribute('onclick', `toggleMenu(event)`);
+            menu.querySelector('button[onclick^="showEditForm"]').setAttribute('onclick', `showEditForm('${questionNumber}', '${questionTextElement.nextSibling.textContent.trim()}')`);
+            menu.querySelector('button[onclick^="deleteQuestion"]').setAttribute('onclick', `deleteQuestion('${questionNumber}')`);
+            menu.querySelector('button[onclick^="moveQuestionUp"]').setAttribute('onclick', `moveQuestionUp('${questionNumber}')`);
+            menu.querySelector('button[onclick^="moveQuestionDown"]').setAttribute('onclick', `moveQuestionDown('${questionNumber}')`);
+            question.querySelector('.edit-form').id = `edit-form-${questionNumber}`;
+            question.querySelector('.edit-form input').id = `edit-input-${questionNumber}`;
+            question.querySelector('.edit-form button[onclick^="saveQuestion"]').setAttribute('onclick', `saveQuestion('${questionNumber}')`);
+            question.querySelector('.edit-form button[onclick^="cancelEdit"]').setAttribute('onclick', `cancelEdit('${questionNumber}')`);
+            question.querySelector('input[type="hidden"]').id = `hidden-question-${questionNumber}`;
+        });
+    }
 
 function updateHiddenFields() {
     const questions = document.querySelectorAll('.triangle-box');
@@ -342,74 +384,136 @@ function updateHiddenFields() {
     });
 }
 
-function addQuestion() {
-    const questionsList = document.getElementById('questions-list');
-    const newCounter = questionsList.children.length + 1;
+// function addQuestion() {
+//     const questionsList = document.getElementById('questions-list');
+//     const newCounter = questionsList.children.length + 1;
 
-    const newQuestion = document.createElement('div');
-    newQuestion.classList.add('triangle-box');
-    newQuestion.id = `triangle-box-${newCounter}`;
-    newQuestion.innerHTML = `
-        <div class="question-text" id="question-text-${newCounter}">
-            <span class="question-number">${newCounter}</span> 
-            <input type="text" placeholder="הכנס שאלה כאן" id="new-question-input-${newCounter} class ="input-large">
-            <button class="menu-button" type="button" onclick="toggleMenu(event)">...</button>
-            <div class="menu" style="display: none;">
-                <button type="button" onclick="showEditForm('${newCounter}', '')">ערוך</button>
-                <button type="button" onclick="deleteQuestion('${newCounter}')">מחק</button>
-                <button type="button" onclick="moveQuestionUp('${newCounter}')">העברה למעלה</button>
-                <button type="button" onclick="moveQuestionDown('${newCounter}')">העברה למטה</button>
-            </div>
-        </div>
-        <div class="edit-form" id="edit-form-${newCounter}" style="display: none;">
-            <input type="text" id="edit-input-${newCounter}" placeholder="עריכת שאלה" class ="input-large" />
-            <button type="button" onclick="saveQuestion('${newCounter}')">שמור</button>
-            <button type="button" onclick="cancelEdit('${newCounter}')">בטל</button>
-        </div>
-        <button type="button" onclick="saveNewQuestion('${newCounter}')">שמור שאלה</button>
-    `;
+//     const newQuestion = document.createElement('div');
+//     newQuestion.classList.add('triangle-box');
+//     newQuestion.id = `triangle-box-${newCounter}`;
+//     newQuestion.innerHTML = `
+//         <div class="question-text" id="question-text-${newCounter}">
+//             <span class="question-number">${newCounter}</span> 
+//             <input type="text" placeholder="הכנס שאלה כאן" id="new-question-input-${newCounter} class ="input-large">
+//             <button class="menu-button" type="button" onclick="toggleMenu(event)">...</button>
+//             <div class="menu" style="display: none;">
+//                 <button type="button" onclick="showEditForm('${newCounter}', '')">ערוך</button>
+//                 <button type="button" onclick="deleteQuestion('${newCounter}')">מחק</button>
+//                 <button type="button" onclick="moveQuestionUp('${newCounter}')">העברה למעלה</button>
+//                 <button type="button" onclick="moveQuestionDown('${newCounter}')">העברה למטה</button>
+//             </div>
+//         </div>
+//         <div class="edit-form" id="edit-form-${newCounter}" style="display: none;">
+//             <input type="text" id="edit-input-${newCounter}" placeholder="עריכת שאלה" class ="input-large" />
+//             <button type="button" onclick="saveQuestion('${newCounter}')">שמור</button>
+//             <button type="button" onclick="cancelEdit('${newCounter}')">בטל</button>
+//         </div>
+//         <button type="button" onclick="saveNewQuestion('${newCounter}')">שמור שאלה</button>
+//     `;
     
-    questionsList.appendChild(newQuestion);
-}
+//     questionsList.appendChild(newQuestion);
+// }
 
-function saveNewQuestion(counter) {
-    const newQuestionInput = document.getElementById(`new-question-input-${counter}`);
-    const questionText = newQuestionInput.value.trim();
-    
-    if (questionText !== '') {
-        const questionTextElement = document.createElement('div');
-        questionTextElement.classList.add('triangle-box');
-        questionTextElement.id = `triangle-box-${counter}`;
-        questionTextElement.innerHTML = `
-            <div class="question-text" id="question-text-${counter}">
-                <span class="question-number">${counter}</span> ${questionText}
+    // Add new question functionality
+    function addQuestion() { // Revised function
+        const questionsList = document.getElementById('questions-list');
+        const newCounter = questionsList.children.length + 1;
+        const newQuestionDiv = document.createElement('div');
+        newQuestionDiv.classList.add('triangle-box');
+        newQuestionDiv.id = `triangle-box-${newCounter}`;
+        newQuestionDiv.innerHTML = `
+            <div class="question-text" id="question-text-${newCounter}">
+                <span class="question-number">${newCounter}</span> 
+                <input type="text" id="new-question-input-${newCounter}" class="input-large" placeholder="הכנס שאלה כאן" />
                 <button class="menu-button" type="button" onclick="toggleMenu(event)">...</button>
                 <div class="menu" style="display: none;">
-                    <button type="button" onclick="showEditForm('${counter}', '${questionText}')">ערוך</button>
+                    <button type="button" onclick="showEditForm('${newCounter}', '')">ערוך</button>
+                    <button type="button" onclick="deleteQuestion('${newCounter}')">מחק</button>
+                    <button type="button" onclick="moveQuestionUp('${newCounter}')">העברה למעלה</button>
+                    <button type="button" onclick="moveQuestionDown('${newCounter}')">העברה למטה</button>
+                </div>
+            </div>
+            <div class="edit-form" id="edit-form-${newCounter}" style="display: none;">
+                <input type="text" id="edit-input-${newCounter}" placeholder="עריכת שאלה" class="input-large" />
+                <button type="button" onclick="saveQuestion('${newCounter}')">שמור</button>
+                <button type="button" onclick="cancelEdit('${newCounter}')">בטל</button>
+            </div>
+            <button type="button" onclick="saveNewQuestion('${newCounter}')">שמור שאלה</button>
+            <input type="hidden" name="questions[]" id="hidden-question-${newCounter}">
+        `;
+        
+        questionsList.appendChild(newQuestionDiv);
+    }
+
+    function saveNewQuestion(counter) {
+        const newQuestionInput = document.getElementById(`new-question-input-${counter}`);
+        const newQuestionText = newQuestionInput.value;
+        const newQuestionDiv = document.getElementById(`triangle-box-${counter}`);
+        
+        // Update the new question's div to match the existing question format
+        newQuestionDiv.innerHTML = `
+            <div class="question-text" id="question-text-${counter}">
+                <span class="question-number">${counter}</span> ${newQuestionText}
+                <button class="menu-button" type="button" onclick="toggleMenu(event)">...</button>
+                <div class="menu" style="display: none;">
+                    <button type="button" onclick="showEditForm('${counter}', '${newQuestionText}')">ערוך</button>
                     <button type="button" onclick="deleteQuestion('${counter}')">מחק</button>
                     <button type="button" onclick="moveQuestionUp('${counter}')">העברה למעלה</button>
                     <button type="button" onclick="moveQuestionDown('${counter}')">העברה למטה</button>
                 </div>
             </div>
             <div class="edit-form" id="edit-form-${counter}" style="display: none;">
-                <input type="text" id="edit-input-${counter}" value="${questionText}" />
+                <input type="text" id="edit-input-${counter}" value="${newQuestionText}" />
                 <button type="button" onclick="saveQuestion('${counter}')">שמור</button>
                 <button type="button" onclick="cancelEdit('${counter}')">בטל</button>
             </div>
-            <input type="hidden" name="questions[]" id="hidden-question-${counter}" value="${questionText}">
+            <input type="hidden" name="questions[]" id="hidden-question-${counter}" value="${newQuestionText}">
         `;
-        
-        const questionsList = document.getElementById('questions-list');
-        questionsList.replaceChild(questionTextElement, document.getElementById(`triangle-box-${counter}`));
-
-        // Update hidden input with the new question
-        const hiddenInput = document.getElementById(`hidden-question-${counter}`);
-        hiddenInput.value = questionText;
-
-    } else {
-        alert('Please enter a question.');
     }
-}
+
+    function cancelNewQuestion(counter) {
+        const newQuestionDiv = document.getElementById(`triangle-box-${counter}`);
+        newQuestionDiv.remove();
+    }
+
+// function saveNewQuestion(counter) {
+//     const newQuestionInput = document.getElementById(`new-question-input-${counter}`);
+//     const questionText = newQuestionInput.value.trim();
+    
+//     if (questionText !== '') {
+//         const questionTextElement = document.createElement('div');
+//         questionTextElement.classList.add('triangle-box');
+//         questionTextElement.id = `triangle-box-${counter}`;
+//         questionTextElement.innerHTML = `
+//             <div class="question-text" id="question-text-${counter}">
+//                 <span class="question-number">${counter}</span> ${questionText}
+//                 <button class="menu-button" type="button" onclick="toggleMenu(event)">...</button>
+//                 <div class="menu" style="display: none;">
+//                     <button type="button" onclick="showEditForm('${counter}', '${questionText}')">ערוך</button>
+//                     <button type="button" onclick="deleteQuestion('${counter}')">מחק</button>
+//                     <button type="button" onclick="moveQuestionUp('${counter}')">העברה למעלה</button>
+//                     <button type="button" onclick="moveQuestionDown('${counter}')">העברה למטה</button>
+//                 </div>
+//             </div>
+//             <div class="edit-form" id="edit-form-${counter}" style="display: none;">
+//                 <input type="text" id="edit-input-${counter}" value="${questionText}" />
+//                 <button type="button" onclick="saveQuestion('${counter}')">שמור</button>
+//                 <button type="button" onclick="cancelEdit('${counter}')">בטל</button>
+//             </div>
+//             <input type="hidden" name="questions[]" id="hidden-question-${counter}" value="${questionText}">
+//         `;
+        
+//         const questionsList = document.getElementById('questions-list');
+//         questionsList.replaceChild(questionTextElement, document.getElementById(`triangle-box-${counter}`));
+
+//         // Update hidden input with the new question
+//         const hiddenInput = document.getElementById(`hidden-question-${counter}`);
+//         hiddenInput.value = questionText;
+
+//     } else {
+//         alert('Please enter a question.');
+//     }
+// }
 </script>
 {% endblock %}
 {% endblock %}
