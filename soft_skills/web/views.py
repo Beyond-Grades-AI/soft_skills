@@ -259,7 +259,7 @@ def submit_answers(request):
         # Retrieve student's full name from the form
         full_name = request.POST.get('full_name')
         email = request.POST.get('email')
-        test_box = request.POST.get('test') == 'on'
+        # test_box = request.POST.get('test') == 'on'
 
         # Validate the full name (two words)
         if not full_name or len(full_name.split()) < 2:
@@ -288,7 +288,7 @@ def submit_answers(request):
                     student_identifier=email,
                     question=question,
                     answer_text=value,
-                    testbox =test_box
+                    testbox =0
                 )
 
         # if it is the first student's submission, Create a Student object and associate it with the test
