@@ -3,8 +3,7 @@
 Certainly! Below is a comprehensive setup guide that you can share with your collaborators, including setting up Django, creating a virtual environment, writing a requirements.txt file, and optionally installing the Django Debug Toolbar:
 
 
-### Setup Guide for Collaborators (yotam - for django form project)
-
+### Setup Guide for Collaborators
 #### 1. Prerequisites
 - Python 3.x installed on your system ([Download Python](https://www.python.org/downloads/))
 
